@@ -1,0 +1,1 @@
+/home/www/cepcam_app/spunchcomics/gen_index.sh
