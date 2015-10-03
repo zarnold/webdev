@@ -1,5 +1,8 @@
 #/bin/sh
-LOG_PATH="/home/cepcam/spunch.log"
+# Your comics folder structure should be like :
+# - ./bdd/sharable/<SERIE_NAME>/<EPISODE_NAME>/
+# - image in this folder
+# Your images should be named in alphabetical order aka a.jpg, b.jpg, c.jpg,...
 
 # -- ERROR CODE
 E_BDD_INVALID=2
@@ -214,8 +217,8 @@ buildEpisodes ()
               if [[ ! "${image}" =~ \*.* ]]
               then
                 initiateObject
-            
-                putJson "\"url\": \"http://cdn.cepcam.org/${lang_folder}/${serie}/${episode}/${image}\""
+                # reaplce with your own server url 
+                putJson "\"url\": \"http://my_server.com/${lang_folder}/${serie}/${episode}/${image}\""
 
                 closeObject
                 putSeparator
@@ -288,27 +291,8 @@ sanitizeJson
 
 gen_authors
 }
-printLog "Starting french"
-lang_folder="series"
-BDD_PATH="/home/www/cepcam_app/spunchcomics/new_bdd/cepcam/spunch/series"
-do_gen
 
-printLog "Starting english"
-lang_folder="series_eng"
-BDD_PATH="/home/www/cepcam_app/spunchcomics/new_bdd/cepcam/spunch/series_eng"
-do_gen
-
-printLog "Last French episode"
-lang_folder="last_fr"
-BDD_PATH="/home/www/cepcam_app/spunchcomics/new_bdd/cepcam/spunch/last_fr"
-do_gen
-
-printLog "Last english episode"
-lang_folder="last_eng"
-BDD_PATH="/home/www/cepcam_app/spunchcomics/new_bdd/cepcam/spunch/last_eng"
-do_gen
-
-printLog "sharable episodes"
+printLog "Generate index"
 lang_folder="sharable"
-BDD_PATH="/home/www/cepcam_app/spunchcomics/new_bdd/cepcam/spunch/sharable"
+BDD_PATH="./bdd/sharable"
 do_gen

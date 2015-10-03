@@ -80,9 +80,9 @@ MANGANESE.MODEL.PRODUCTS.player = function(){
   var comic = {};
 
   var SERVER_INFO = {
-    server: 'http://app.cepcam.org/bdd',
-    publisher: 'cepcam',
-    collection: 'spunch'
+    server: 'http://myserver.com/bdd',
+    publisher: 'your',
+    collection: 'manganese'
   };
 
   var comicsInfo = {
@@ -126,7 +126,7 @@ MANGANESE.MODEL.PRODUCTS.player = function(){
 
     /*
     var screen=document.createElement("h6");
-    screen.innerHTML='Retrouvez un épisode de '+ episode.serie+' offert par <a href="http://spunchcomics.com">Spunchcomics</a>. Cliquez à droite de l\'image pour avancer, à gauche pour reculer';
+    screen.innerHTML='Retrouvez un épisode de '+ episode.serie+' offert par <a href="http://manganesecomics.com">Spunchcomics</a>. Cliquez à droite de l\'image pour avancer, à gauche pour reculer';
     comic.appendChild(screen);
       */
     currentCase = 0;
@@ -193,7 +193,7 @@ var previousPage = function()
 }
 //*****************************************
   /******************************************
-   *  This function retrieve the comics from cepcam server
+   *  This function retrieve the comics from your server
    *
   **/  
   var getComics = function()
@@ -298,7 +298,7 @@ var previousPage = function()
 
     request.onerror = function() {
       // There was a connection error of some sort
-      printTrace("Can't reach spunch server");
+      printTrace("Can't reach manganese server");
     };
 
     request.send();
@@ -321,7 +321,7 @@ var previousPage = function()
 //Main is here. It starts everythin
 // main
   var launch = function(){
-    printTrace("Launching spunch player");
+    printTrace("Launching manganese player");
 
 //Pretty Self explanatory
     processData();
