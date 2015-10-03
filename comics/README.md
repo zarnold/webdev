@@ -3,6 +3,7 @@
 ## TODO
 
 - add doc
+- MAchine Learning : implement a KMean or RNN for recommendations
 
 
 ## Explanation
