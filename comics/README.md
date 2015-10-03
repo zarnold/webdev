@@ -3,8 +3,7 @@
 ## TODO
 
 - add doc
-- add simple index example
-- add sharable widget code
+
 
 ## Explanation
 
