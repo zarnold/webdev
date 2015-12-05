@@ -1,4 +1,29 @@
 var Twitter = require('twitter');
+var mongoose = require('mongoose');
+
+//----------------------------------------------------------------------
+mongoose.connect('mongodb://localhost/tweetbot', function(err) {
+    if (err) { 
+      console.log('cannot connect to mongodb');
+      throw err; 
+      }
+});
+
+var tweetSchema = new mongoose.Schema({
+  text: String,
+  date: { type : Date, default : Date.now },
+  score:   { type : Number, min : 0, default : 0 }
+});
+
+var tweetModel=mongoose.model('tweet',tweetSchema);
+
+var test=new tweetModel({text:' Launch'});
+test.save(function (err) {
+    if (err) { throw err; }
+      console.log('Test tweet insert');
+});
+
+//----------------------------------------------------------------------
  
  var client = new Twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -20,7 +45,8 @@ function post_cb(err,tweet,resp){
       console.log(err);
        throw err;
     }
-    console.log(resp);  // Raw response object. 
+      console.log('ok');
+    //console.log(resp);  // Raw response object. 
 };
 
 
@@ -28,7 +54,8 @@ function post_cb(err,tweet,resp){
 var params = {screen_name: 'cepcam'};
 client.get('statuses/user_timeline', params, function(error, tweets, response){
     if (!error) {
-      console.log(tweets);
+      //console.log(tweets);
+      console.log('ok');
     }
     else {
       console.log(error);

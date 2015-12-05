@@ -1,0 +1,24 @@
+{
+  "name": "tweetq",
+  "description": "Get trends",
+  "private": false,
+  "author": "arnold",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zarnold/webdev.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "forever": "latest",
+    "mongoose": "latest",
+    "npm": "^2.1.0",
+    "passport-facebook": "latest",
+    "passport-github": "latest",
+    "passport-google-oauth": "latest",
+    "passport-linkedin": "latest",
+    "passport-local": "latest",
+    "passport-twitter": "latest",
+    "q": "latest",
+    "request": "latest"
+  }
+}
