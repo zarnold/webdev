@@ -40,6 +40,14 @@ var generateText=function()
   return b;
 }
 
+function search_cb(err,tweet,resp){
+    if(err){
+      console.log(err);
+       throw err;
+    }
+      console.log(resp);
+};
+
 function post_cb(err,tweet,resp){
     if(err){
       console.log(err);
@@ -51,6 +59,7 @@ function post_cb(err,tweet,resp){
 
 
 // Basic status of a user
+/*
 var params = {screen_name: 'cepcam'};
 client.get('statuses/user_timeline', params, function(error, tweets, response){
     if (!error) {
@@ -61,8 +70,9 @@ client.get('statuses/user_timeline', params, function(error, tweets, response){
       console.log(error);
     }
     });
-
+*/
 // Say something 
+/*
 var param={
   'status':generateText(),
   'possibly_sensitive':false,
@@ -72,4 +82,25 @@ var param={
 };
 
 client.post('statuses/update', param,  post_cb);
+*/
 
+// Make a full request
+var since_date="2015-09-01";
+var till_date="2015-09-30";
+var words=["jenifer","mika","garou"];
+var ref="@cepcam";
+
+query=words[0];
+words.slice(1).forEach(function(el){
+	query+=' OR '+el;
+});
+
+query+=" since:"+since_date;
+query+=" till:"+till_date;
+console.log(query);
+
+var param={
+	'q':query,
+	'lang':'fr'
+};
+client.get('search/tweets', param,search_cb);
