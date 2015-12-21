@@ -60,15 +60,8 @@ function displayTweetCB(err,tw,resp)
 	
 		
 	tw.statuses.forEach(function(el){
-		if(el.hasOwnProperty('hashtags'))
-		{
-			console.log("Hashtags :"+el.hashtags);	
-			el.hashtags.forEach(function(hasht){
-				t.push[hasht.text];
-			});
-		}
-        text+=el.txt;
-		timeline.push(new Date(el.created_at));	
+      text+=el.txt;
+      timeline.push(new Date(el.created_at));	
 			});
 
 
@@ -86,17 +79,13 @@ function displayTweetCB(err,tw,resp)
 	ch=term_array[term_array.length-1];
 	var re =/\+/gi;
 	channel=ch.replace(re,' ');
-    t.push(term_array[0]);
-    t.push(term_array[1]);
-    t.push(channel);
 	var dr=1000*(rate-memory[channel]['rate'])/(rate+memory[channel]['rate']);
     if (isNaN(dr)) dr=0;
 	memory[channel]['derivate']=dr;
 	memory[channel]['rate']=rate;
-	memory[channel]['terms']=t;
 
     saveToJson(resp,'stats.json');
-	var line=now+','+terms+','+rate+'\n';
+	var line=now+','+ch+','+rate+'\n';
 	fs.appendFile('stats.csv',line, function(err){
 		if(err){
 			console.log('Error While Saving to csv');
@@ -143,6 +132,7 @@ console.log('**** Update stats ***');
 				q.push(memory[k]["terms"][key_i]);	
 		};
 		q.push(k);
+    console.log(" ------- please requiere :"+q);
 		makeStats(q);
 	};
 };
