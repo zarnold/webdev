@@ -7,27 +7,14 @@ var TWEET_COUNT=100;
 var REQ_PER_INTERVAL=15;
 var REQ_PERIOD_MIN=5
 var INTERVAL=REQ_PERIOD_MIN*REQ_PER_INTERVAL*1000;
-var COOKIE="7c43fc994ca5b5a807bbeaca3606a653817a11a4fc6a356bc7420155620f371f"
 
-var APP_PORT=1979
 
 var top_buzz={};
 var memory={
-"TF1":{"scores":0,"rate":0,"derivate":0,"terms":[]},
-"France 2":{"scores":0,"rate":0,"derivate":0,"terms":[]},
-"France 3":{"scores":0,"rate":0,"derivate":0,"terms":[]},
-"France 5":{"scores":0,"rate":0,"derivate":0,"terms":[]},
-"M6":{"scores":0,"rate":0,"derivate":0,"terms":[]},
-"Arte":{"scores":0,"rate":0,"derivate":0,"terms":[]},
-"D8":{"scores":0,"rate":0,"derivate":0,"terms":[]},
-"W9":{"scores":0,"rate":0,"derivate":0,"terms":[]},
-"TMC":{"scores":0,"rate":0,"derivate":0,"terms":[]},
-"NT1":{"scores":0,"rate":0,"derivate":0,"terms":[]},
-"NRJ 12":{"scores":0,"rate":0,"derivate":0,"terms":[]},
-"France 4":{"scores":0,"rate":0,"derivate":0,"terms":[]},
-"BFMTV":{"scores":0,"rate":0,"derivate":0,"terms":[]},
-"D17":{"scores":0,"rate":0,"derivate":0,"terms":[]},
-"Gulli":{"scores":0,"rate":0,"derivate":0,"terms":[]}
+"FN":{"scores":0,"rate":0,"derivate":0,"terms":["marine","le pen","fn","front national"]},
+"anxiogene":{"scores":0,"rate":0,"derivate":0,"terms":["attentat","meurtre","braquage","immigration"]},
+"politique":{"scores":0,"rate":0,"derivate":0,"terms":["hollande","sarkozy","le pen","juppe","bayrou","election"]},
+"science":{"scores":0,"rate":0,"derivate":0,"terms":["decouverte","science","physique","chimie","mathematique","nobel"]}
 };
 //----------------------------------------------------------------------
  

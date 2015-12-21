@@ -9,6 +9,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "twitter":"latest",
     "forever": "latest",
     "mongoose": "latest",
     "npm": "^2.1.0",
