@@ -4,10 +4,11 @@ var http = require('http');
 var Twitter = require('twitter');
 
 var TWEET_COUNT=100;
-var REQ_PER_INTERVAL=15;
+var REQ_PER_INTERVAL=4;
 var REQ_PERIOD_MIN=5
 var INTERVAL=REQ_PERIOD_MIN*REQ_PER_INTERVAL*1000;
 
+var APP_PORT=1979;
 
 var top_buzz={};
 var memory={
@@ -109,12 +110,9 @@ var makeStats=function(words)
 {
 var since_date="2015-12-01";
 var till_date="2015-09-30";
-var ref="@cepcam";
 
-/*
 console.log(' -------------------------- Query is :');
 console.log(words);
-*/
 query=words[0];
 words.slice(1).forEach(function(el){
 	query+=' OR '+el;
@@ -137,66 +135,18 @@ client.get('search/tweets', param,displayTweetCB);
 var updateStats=function(){
 
 console.log('**** Update stats ***');
-var options = {
-  host: '192.168.1.33',
-  port:1234,
-  path: '/keewiiword'
+    for(var k in memory){
+    console.log(memory[k]);
+		var q=[];
+    for(var key_i in memory[k]["terms"])
+		{
+				q.push(memory[k]["terms"][key_i]);	
+		};
+		q.push(k);
+		makeStats(q);
+	};
 };
 
-var req = http.get(options, function(res) {
-
-  // Buffer the body entirely for processing as a whole.
-  var bodyChunks = [];
-  res.on('data', function(chunk) {
-    // You can process streamed parts here...
-    bodyChunks.push(chunk);
-  }).on('end', function() {
-    var body = Buffer.concat(bodyChunks);
-	epg=JSON.parse(body);
-	epg.forEach(function(el){
-		memory[el.channel]['scores']=el.score;
-		var q=[];
-		el.words.forEach(function(w)
-		{
-				q.push(w.term);	
-		});
-		q.push(el.channel);
-		makeStats(q);
-	});
-
-    // ...and/or process the entire body here.
-  })
-});
-
-req.on('error', function(e) {
-  console.log('ERROR: ' + e.message);
-});
-
-/*
-http.request(options, function (res) {
-		if (err) {
-			return  console.log(err);
-			}
-		else
-		{
-			console.log('**** Got Request *****');
-			console.log(data.body);
-			epg=JSON.parse(data.body);
-			epg.forEach(function(el){
-				var q=[];
-				el.words.forEach(function(w)
-				{
-					q.push(w.term);	
-				});
-                q.push(el.channel);
-				console.log(q);
-				makeStats(q);
-			});
-		}
-	  });
-*/
-
-}
 //--------- POST ------------------
 function sendTweet(str)
 {
@@ -273,16 +223,12 @@ var computeBuz=function(){
 			{
 				max=memory[key]['rate'];
 				console.log("We got buzz !!!!!!!!!!!!!!!!!!!!!!! on "+key);
-				changeLight();
-				other_color();
 				top_ch=memory[key];
 			var k=key;
 			}	
 			console.log(key + " -> " + memory[key]);
 		}
 	};
-changeLight();
-random_color();
    var a={};
 	a[k]=top_ch;
    top_buzz=a;
@@ -290,158 +236,9 @@ console.log(top_buzz);
 	saveToJson(memory,'derivee.json');
 };
 
-//Create a server
-var server = http.createServer(channelTopResp);
-
-//Lets start our server
-server.listen(APP_PORT, function(){
-    //Callback triggered when server is successfully listening. Hurray!
-    console.log("Server listening on: http://localhost:%s", APP_PORT);
-});
-function turnOff(){
-var postData = JSON.stringify({
-    "propertyFunction": 1,
-    "propertyName": 1,
-    "value": false
-});
-
-console.log('---- Change light');
-console.log(postData);
-var options = {
-  host: "192.168.1.100",
-  port: 8080,
-  headers:{
-    "x-sessionid": COOKIE
-},
-  path: "/api.bbox.lan/v0/iot/properties/btF4B85E63D973",
-  method:"PUT"
-};
-
-var req = http.request(options, function(res) {
-  console.log('STATUS: ' + res.statusCode);
-  console.log('HEADERS: ' + JSON.stringify(res.headers));
-  res.setEncoding('utf8');
-  res.on('data', function (chunk) {
-    console.log('BODY: ' + chunk);
-  });
-});
-
-req.on('error', function(e) {
-  console.log('problem with request: ' + e.message);
-});
-
-// write data to request body
-req.write(postData);
-req.end();
-}
-function other_color(){
-var postData = JSON.stringify({
-    "propertyFunction":5,
-    "propertyName": 14,
-    "value": 1888888888
-});
-
-console.log('---- Change light');
-console.log(postData);
-var options = {
-  host: "192.168.1.100",
-  port: 8080,
-  headers:{
-    "x-sessionid": COOKIE
-},
-  path: "/api.bbox.lan/v0/iot/properties/btF4B85E63D973",
-  method:"PUT"
-};
-
-var req = http.request(options, function(res) {
-  res.setEncoding('utf8');
-  res.on('data', function (chunk) {
-    console.log('BODY: ' + chunk);
-  });
-});
-
-req.on('error', function(e) {
-  console.log('problem with request: ' + e.message);
-});
-
-// write data to request body
-req.write(postData);
-req.end();
-}
-function random_color(){
-var postData = JSON.stringify({
-    "propertyFunction":5,
-    "propertyName": 14,
-    "value": 1222222
-});
-
-console.log('---- Change light');
-console.log(postData);
-var options = {
-  host: "192.168.1.100",
-  port: 8080,
-  headers:{
-    "x-sessionid": COOKIE
-},
-  path: "/api.bbox.lan/v0/iot/properties/btF4B85E63D973",
-  method:"PUT"
-};
-
-var req = http.request(options, function(res) {
-  res.setEncoding('utf8');
-  res.on('data', function (chunk) {
-    console.log('BODY: ' + chunk);
-  });
-});
-
-req.on('error', function(e) {
-  console.log('problem with request: ' + e.message);
-});
-
-// write data to request body
-req.write(postData);
-req.end();
-}
-
-function changeLight()
-{
-var postData = JSON.stringify({
-    "propertyFunction": 1,
-    "propertyName": 1,
-    "value": true
-});
-
-console.log('---- Change light');
-console.log(postData);
-var options = {
-  host: "192.168.1.100",
-  port: 8080,
-  headers:{
-    "x-sessionid": COOKIE
-},
-  path: "/api.bbox.lan/v0/iot/properties/btF4B85E63D973",
-  method:"PUT"
-};
-
-var req = http.request(options, function(res) {
-  res.setEncoding('utf8');
-  res.on('data', function (chunk) {
-    console.log('BODY: ' + chunk);
-  });
-});
-
-req.on('error', function(e) {
-  console.log('problem with request: ' + e.message);
-});
-
-// write data to request body
-req.write(postData);
-req.end();
-}
 
 //-------------------------------------------
 //------ START HERE ------------------------
-turnOff();
 
 updateStats();
 setInterval(updateStats,INTERVAL);
