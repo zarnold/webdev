@@ -16,14 +16,14 @@ var DunjonMaster = function (name)
 
   this.name = name;
   this.client = new Twitter({
-	consumer_key: '',
-	consumer_secret: '',
-	access_token_key: '',
-	access_token_secret:'' 
+	consumer_key: 'NqxylVowpwjyiz1i0rvG7b2ak',
+	consumer_secret: 'DvOOZTxeWolav1g3CF8xXxmQAht5Y8yi6DY2STKJ1o6PLznaDw',
+	access_token_key: '576210940-HtHMiLqkaLFrJy8E1xcJw1YCyp1s1t7Qn2EGQHhH',
+	access_token_secret:'kA7ECIcS9kPPxI1j0ehmrwVNiwucvUoaD5vo28OhNWzLU' 
   });
 
   // Bind or loose ref
-  var t=36000-(17000*Math.random())
+  var t=24*60*60*1000*Math.random();
   this.timer =  setInterval(this.talk.bind(this), t);
 }
 
@@ -89,3 +89,5 @@ bob=new DunjonMaster('Carl');
 alice=new DunjonMaster('Ines');
 charly=new DunjonMaster('Ibrahim');
 
+
+charly.talk();
