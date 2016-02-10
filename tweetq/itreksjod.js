@@ -1,4 +1,4 @@
-var marvel = require('marvel-characters')
+var marvel = require('marvel-characters');
 var Twitter = require('twitter');
 var jsonfile = require('jsonfile');
 
@@ -119,10 +119,11 @@ var DunjonMaster = function (name)
   
   if (name == undefined) name = "randomDude";
 
-  this.name = name;
+  this.context={};
+  this.context.name = name;
   this.timeline="itreksjod";
 
-  this.lastReplyId=14927799;
+  this.context.lastReplyId=14927799;
 
   this.client = new Twitter({
 	consumer_key: '',
@@ -131,6 +132,19 @@ var DunjonMaster = function (name)
 	access_token_secret:'' 
   });
 
+  console.log("loading");
+  var self=this;
+
+  var file = 'data.json';
+  obj = jsonfile.readFileSync(file)
+		  if(!obj){ 
+			  console.log("error.did not find "+file);
+			}
+		  else{
+			  console.log(obj.name + " found its saved game");
+			  console.log(obj)
+			  this.context=obj;
+			};
   // Bind or loose ref
   var t=36000-(17000*Math.random())
   t=t*60;
@@ -157,9 +171,9 @@ DunjonMaster.prototype.talk = function() {
 	{
 	  var a=marvel();
 	
-	  if(Math.random()<0.3) return self.name+" does not like "+a;
-	  if(Math.random()<0.6) return self.name+" likes "+a;
-	   return self.name+" does not care about "+a;
+	  if(Math.random()<0.3) return self.context.name+" does not like "+a;
+	  if(Math.random()<0.6) return self.context.name+" likes "+a;
+	   return self.context.name+" does not care about "+a;
 	}
 
 	var param={
@@ -170,7 +184,7 @@ DunjonMaster.prototype.talk = function() {
 	  'place':'df51dec6f4ee2b2c'
 	};
 
-	console.log(this.name+" said");
+	console.log(this.context.name+" said");
 	this.client.post('statuses/update', param,  post_cb);
 
 };
@@ -201,7 +215,7 @@ DunjonMaster.prototype.replyTo = function(id,dude,blabla) {
 	  'place':'df51dec6f4ee2b2c'
 	};
 
-	console.log(this.name+" replied  "+myTweet +' to ' + id );
+	console.log(this.context.name+" replied  "+myTweet +' to ' + id );
 	this.client.post('statuses/update', param,  post_cb);
 }
 
@@ -233,7 +247,7 @@ DunjonMaster.prototype.talkTo = function(dude,blabla) {
 	  'place':'df51dec6f4ee2b2c'
 	};
 
-	console.log(this.name+" says "+myTweet );
+	console.log(this.context.name+" says "+myTweet );
 	this.client.post('statuses/update', param,  post_cb);
 }
 
@@ -246,7 +260,7 @@ DunjonMaster.prototype.watch = function()
 
 	var param={
 		'count': 200,
-		'since_id': self.lastReplyId
+		'since_id': self.context.lastReplyId
 	};
 
 	console.log(param);
@@ -263,11 +277,13 @@ DunjonMaster.prototype.watch = function()
 			tweet.forEach(function(el){
 				var to=el.user.name;
 				var tId=el.id_str;
-				if(self.lastReplyId < tId) self.lastReplyId = tId;
+				if(self.context.lastReplyId < tId) self.context.lastReplyId = tId;
 
 				var quote =  quotes[Math.floor(Math.random()*quotes.length)];
-				//self.replyTo(tId,to,quote);
+				self.replyTo(tId,to,quote);
 				});
+
+		  self.save();
 		}	
 	}
 
@@ -280,7 +296,14 @@ DunjonMaster.prototype.watch = function()
  */
 DunjonMaster.prototype.save = function()
 {
+	var obj={};
 	console.log("Saving...");
+	var file = 'data.json'
+	var obj=this.context; 
+    console.log(obj);
+	jsonfile.writeFile(file, obj, {spaces: 2}, function(err) {
+			console.error(err)
+			})
 	console.log("Done.");
 }
 /**
@@ -304,7 +327,6 @@ DunjonMaster.prototype.listenTo = function(dude)
 	});
 }
 
-bob=new DunjonMaster('NolDra');
-
+bob=new DunjonMaster('Ruckus');
 bob.talk();
 bob.watch();
