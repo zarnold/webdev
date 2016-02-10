@@ -1,5 +1,6 @@
 var marvel = require('marvel-characters')
 var Twitter = require('twitter');
+var jsonfile = require('jsonfile');
 
 
 
@@ -121,7 +122,7 @@ var DunjonMaster = function (name)
   this.name = name;
   this.timeline="itreksjod";
 
-  this.listOfReply=[];
+  this.lastReplyId=14927799;
 
   this.client = new Twitter({
 	consumer_key: '',
@@ -134,7 +135,7 @@ var DunjonMaster = function (name)
   var t=36000-(17000*Math.random())
   t=t*60;
   this.timer =  setInterval(this.talk.bind(this), t);
-  this.timer =  setInterval(this.watch.bind(this), 35000);
+  this.timer =  setInterval(this.watch.bind(this), 1*30*1000);
 }
 
 /**
@@ -149,6 +150,7 @@ DunjonMaster.prototype.talk = function() {
 		if(err){
 		  console.log(err);
 		}
+		else console.log("tweet sent");
 	};
 
 	var generateText=function()
@@ -243,9 +245,11 @@ DunjonMaster.prototype.watch = function()
 	var self=this;
 
 	var param={
-		'count': 30,
+		'count': 200,
+		'since_id': self.lastReplyId
 	};
 
+	console.log(param);
 	var whatsAbout = function(err,tweet,resp){
 		if(err){
 			console.log('watch : ');
@@ -253,21 +257,17 @@ DunjonMaster.prototype.watch = function()
 		}
 		else
 		{
+			console.log("Got "+tweet.length);
 			
 			//console.log(tweet);
 			tweet.forEach(function(el){
 				var to=el.user.name;
 				var tId=el.id_str;
-				
-				if ( self.listOfReply.indexOf(tId) === -1 )
-				{
-					self.listOfReply.push(tId);
-					var quote =  quotes[Math.floor(Math.random()*quotes.length)];
-					self.replyTo(tId,to,quote);
-				}
-				else
-					console.log('will NOT reply to '+tId+' ' +to);
-			});
+				if(self.lastReplyId < tId) self.lastReplyId = tId;
+
+				var quote =  quotes[Math.floor(Math.random()*quotes.length)];
+				//self.replyTo(tId,to,quote);
+				});
 		}	
 	}
 
@@ -275,6 +275,14 @@ DunjonMaster.prototype.watch = function()
 	
 }
 
+/**
+ * save the context
+ */
+DunjonMaster.prototype.save = function()
+{
+	console.log("Saving...");
+	console.log("Done.");
+}
 /**
  * Listen to the status of someone
  * @param {string} dude - Who to listen to 
@@ -296,5 +304,7 @@ DunjonMaster.prototype.listenTo = function(dude)
 	});
 }
 
-bob=new DunjonMaster('Ronald');
+bob=new DunjonMaster('NolDra');
+
 bob.talk();
+bob.watch();
