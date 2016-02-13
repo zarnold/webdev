@@ -1,0 +1,36 @@
+{
+  "name": "itreksjod",
+  "version": "0.0.5",
+  "description": "An dunjeon master tweet bot. With images",
+  "main": "itreksjod.js",
+  "dependencies": {
+    "forever": "~0.15.1",
+    "marvel-characters": "~1.0.3",
+    "passport-google-oauth": "~1.0.0",
+    "passport-linkedin": "~1.0.0",
+    "passport-twitter": "~1.0.4",
+    "npm": "~2.14.18",
+    "mongoose": "~4.4.2",
+    "jsonfile": "~2.2.3",
+    "passport-facebook": "~2.1.0",
+    "passport-github": "~1.1.0",
+    "twitter": "~1.2.5",
+    "passport-local": "~1.0.0",
+    "q": "~1.4.1",
+    "request": "~2.69.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zarnold/webdev/tree/itreksjod/tweetq"
+  },
+  "keywords": [
+    "tweeter",
+    "rpg"
+  ],
+  "author": "arnold",
+  "license": "WTFPL"
+}
