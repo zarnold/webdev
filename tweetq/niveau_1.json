@@ -1,0 +1,310 @@
+{
+	"case_0":{
+		"description":"vous etes face à l entrée du donjon",
+		"nord":"case_1",
+		"sud":"rien",
+		"est":"rien",
+		"ouest":"rien",
+		"vue":{
+			"nord":"entree",
+			"sud":"rien",
+			"est":"rien",
+			"ouest":""
+		}
+	},
+		
+	"case_1":{
+		"description":"Vous faites face à un long couloir. Un vent glacial souffle.",
+		"nord":"case_2",
+		"sud":"case_0",
+		"est":"rien",
+		"ouest":"rien",
+		"vue":{
+			"nord":"couloir-droit",
+			"sud":"couloir-droit",
+			"est":"rien",
+			"ouest":"rien"
+		}
+	},
+
+	"case_2":{
+		"description":"Vous êtes dans un étroit couloir.",
+		"nord":"case_3",
+		"sud":"case_1",
+		"est":"rien",
+		"ouest":"rien",
+		"vue":{
+			"nord":"couloir-droit",
+			"sud":"couloir-droit",
+			"est":"rien",
+			"ouest":"rien"
+		}
+	},
+
+	"case_3":{
+		"description":"Vous êtes encore dans un couloir, orienté Sud-Nord",
+		"nord":"case_4",
+		"sud":"case_2",
+		"est":"rien",
+		"ouest":"rien",
+		"vue":{
+			"nord":"couloir-droit",
+			"sud":"couloir-droit",
+			"est":"rien",
+			"ouest":"rien"
+		}
+	},
+
+	"case_4":{
+		"description":"Vous faites face à un long couloir. Il semble y avoir une bifurcationau nord.",
+		"nord":"case_5",
+		"sud":"case_3",
+		"est":"rien",
+		"ouest":"rien",
+		"vue":{
+			"nord":"couloir-droit",
+			"sud":"couloir-droit",
+			"est":"rien",
+			"ouest":"rien"
+		}
+	},
+
+	"case_5":{
+		"description":"Vous êtes à une bifurcation. Le couloir continue à  l Ouest, au Sud et à l Est.",
+		"nord":"rien",
+		"sud":"case_4",
+		"est":"case_6",
+		"ouest":"case_14",
+		"vue":{
+			"nord":"bifurcation",
+			"sud":"couloir-droit",
+			"est":"bifurcation-droite",
+			"ouest":"bifurcation-gauche"
+		}
+	},
+
+	"case_6":{
+		"description":"Le couloir se prolonge à l est. A l ouest, on devine une bifurcation.",
+		"nord":"rien",
+		"sud":"rien",
+		"est":"case_7",
+		"ouest":"case_5",
+		"vue":{
+			"nord":"rien",
+			"sud":"rien",
+			"est":"couloir-droit",
+			"ouest":"couloir-droit"
+		}
+	},
+
+	"case_7":{
+		"description":"Vous etes dans un long couloir orienté est-ouest.",
+		"nord":"rien",
+		"sud":"rien",
+		"est":"case_8",
+		"ouest":"case_6",
+		"vue":{
+			"nord":"rien",
+			"sud":"rien",
+			"est":"couloir-droit",
+			"ouest":"couloir-droit"
+		}
+	},
+
+	"case_8":{
+		"description":"Vous etes dans un long couloir orienté est-ouest.",
+		"nord":"rien",
+		"sud":"rien",
+		"est":"case_9",
+		"ouest":"case_7",
+		"vue":{
+			"nord":"rien",
+			"sud":"rien",
+			"est":"couloir-droit",
+			"ouest":"couloir-droit"
+		}
+	},
+
+	"case_9":{
+		"description":"Vous etes dans un long couloir orienté est-ouest.",
+		"nord":"rien",
+		"sud":"rien",
+		"est":"case_10",
+		"ouest":"case_8",
+		"vue":{
+			"nord":"rien",
+			"sud":"rien",
+			"est":"couloir-droit",
+			"ouest":"couloir-droit"
+		}
+	},
+
+	"case_10":{
+		"description":"Vous etes dans un couloir.A l ouest, un virage semble se profiler.",
+		"nord":"rien",
+		"sud":"rien",
+		"est":"case_11",
+		"ouest":"case_9",
+		"vue":{
+			"nord":"rien",
+			"sud":"rien",
+			"est":"couloir-droit",
+			"ouest":"couloir-droit"
+		}
+	},
+
+	"case_11":{
+		"description":"Le couloir fait un coude vers le Nord.",
+		"nord":"case_12",
+		"sud":"rien",
+		"est":"rien",
+		"ouest":"case_10",
+		"vue":{
+			"nord":"couloir-droit",
+			"sud":"tournant-droite",
+			"est":"tournant-gauche",
+			"ouest":"couloir-droit"
+		}
+	},
+
+	"case_12":{
+		"description":"Vos pas résonnent devant vous.",
+		"nord":"case_13",
+		"sud":"case_11",
+		"est":"rien",
+		"ouest":"rien",
+		"vue":{
+			"nord":"couloir-droit",
+			"sud":"couloir-droit",
+			"est":"rien",
+			"ouest":"rien"
+		}
+	},
+
+	"case_13":{
+		"description":"C'est un cul de sac.",
+		"nord":"rien",
+		"sud":"case_12",
+		"est":"rien",
+		"ouest":"rien",
+		"vue":{
+			"nord":"impasse",
+			"sud":"couloir-droit",
+			"est":"rien",
+			"ouest":"rien"
+		}
+	},
+
+	"case_14":{
+		"description":"Le couloir continue vers l ouest..",
+		"nord":"rien",
+		"sud":"rien",
+		"est":"case_5",
+		"ouest":"case_15",
+		"vue":{
+			"nord":"rien",
+			"sud":"rien",
+			"est":"couloir-droit",
+			"ouest":"couloir-droit"
+		}
+	},
+
+	"case_15":{
+		"description":"Au loin vers l Ouest, semblez entendre une musique.",
+		"nord":"rien",
+		"sud":"rien",
+		"est":"case_14",
+		"ouest":"case_16",
+		"vue":{
+			"nord":"rien",
+			"sud":"rien",
+			"est":"couloir-droit",
+			"ouest":"couloir-droit"
+		}
+	},
+
+	"case_15":{
+		"description":"Au loin vers l Ouest,vous semblez entendre une musique.",
+		"nord":"rien",
+		"sud":"rien",
+		"est":"case_14",
+		"ouest":"case_16",
+		"vue":{
+			"nord":"rien",
+			"sud":"rien",
+			"est":"couloir-droit",
+			"ouest":"couloir-droit"
+		}
+	},
+
+	"case_16":{
+		"description":"A l Ouest se trouve un virage qui mène vers le Nord.",
+		"nord":"rien",
+		"sud":"rien",
+		"est":"case_15",
+		"ouest":"case_17",
+		"vue":{
+			"nord":"rien",
+			"sud":"rien",
+			"est":"couloir-droit",
+			"ouest":"couloir-droit"
+		}
+	},
+
+	"case_17":{
+		"description":"Le couloir bifurque vers le Nord. La musique se fait plus forte.",
+		"nord":"case_18",
+		"sud":"rien",
+		"est":"case_16",
+		"ouest":"rien",
+		"vue":{
+			"nord":"couloir-droit",
+			"sud":"tournant-gauche",
+			"est":"couloir-droit",
+			"ouest":"tournant-droite"
+		}
+	},
+
+	"case_18":{
+		"description":"La musique est maintenant clairement audible. Vous devinez une porte au Nord.",
+		"nord":"case_19",
+		"sud":"case_17",
+		"est":"rien",
+		"ouest":"rien",
+		"vue":{
+			"nord":"couloir-porte",
+			"sud":"couloir-droit",
+			"est":"rien",
+			"ouest":"rien"
+		}
+	},
+
+	"case_19":{
+		"description":"Une porte vous fait face. Elle n'est pas fermée.",
+		"nord":"case_20",
+		"sud":"case_18",
+		"est":"rien",
+		"ouest":"rien",
+		"vue":{
+			"nord":"porte",
+			"sud":"couloir-droit",
+			"est":"rien",
+			"ouest":"rien"
+		}
+	},
+
+	"case_20":{
+		"description":"Bravo ! vous avez trouvé la salle du trésor !.",
+		"nord":"rien",
+		"sud":"case_19",
+		"est":"rien",
+		"ouest":"rien",
+		"vue":{
+			"nord":"salle-tresor",
+			"sud":"porte",
+			"est":"rien",
+			"ouest":"rien"
+		}
+	}
+
+}
