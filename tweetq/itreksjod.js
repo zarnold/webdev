@@ -44,8 +44,9 @@ var DunjonMaster = function (name)
 
   this.context={};
   this.context.name = name;
-  this.timeline="itreksjod";
   this.context.lastReplyId=14927799;
+  this.context.position={'x':0,'y':0};
+  this.timeline="itreksjod";
   this.client = new Twitter({
 	consumer_key: mycredentials.consumer_key,
 	consumer_secret: mycredentials.consumer_secret,
@@ -76,7 +77,7 @@ var DunjonMaster = function (name)
 DunjonMaster.prototype.launch = function(tWatch)
 {
   if ( tWatch == undefined ) tWatch = 1*60*1000;
-  this.watchTimer=  setInterval(this.watch.bind(this), tWatch);
+  this.watchTimer=  setInterval(this.round.bind(this), tWatch);
 
 }
 /**
@@ -169,118 +170,6 @@ DunjonMaster.prototype.talkTo = function(dude,blabla) {
 	console.log(this.context.name+" says "+myTweet );
 	this.client.post('statuses/update', param,  post_cb);
 }
-
-/**
- * watch a mention
- */
-DunjonMaster.prototype.watch = function()
-{
-	var self=this;
-
-  // ------------------------------------------------------------------------------
-	var showMonster =function(p){
-        console.log(p);
-		self.show('streumA', 'En voila un par exemple',p.dude,p.id);
-	};
-	
-	var showHere = function(p){
-		self.show('bifurcation', 'Voila ce que vous voyez',p.dude,p.id);
-	};
-
-	var showMap = function(p){
-		self.show('plan', 'Bonne route',p.dude,p.id);
-	};
-  
-	var showHelp = function(p){
-    var msg="Envoyez vos instructions à itreksjod.";
-    self.replyTo(p.id,p.dude,msg);
-    msg="Les rounds durent 5mn";
-    self.replyTo(p.id,p.dude,msg);
-    msg="Exemple de message : bouge, help, attaque,...";
-    self.replyTo(p.id,p.dude,msg);
-	};
-
-  var basicIA = [
-	{
-	  're':/monstre/gi,
-	  'func':showMonster
-	},
-  {
-	  're':/o[uù].*suis.*je/gi,
-	  'func':showHere
-	},
-  {
-	  're':/inspecte/gi,
-	  'func':showHere
-	},
-  {
-	  're':/aide/gi,
-	  'func':showHelp
-	},
-  {
-	  're':/instruction/gi,
-	  'func':showHelp
-	},
-  {
-	  're':/help/gi,
-	  'func':showHelp
-	},
-	{
-	  're':/plan/gi,
-	  'func':showMap
-	},
-	{
-	  're':/carte/gi,
-	  'func':showMap
-	},
-  {
-	  're':/map/gi,
-	  'func':showMap
-	}
-	];
-	var param={
-		'since_id': self.context.lastReplyId
-	};
-
-	var whatsAbout = function(err,tweet,resp){
-		if(err){
-			console.log('watch : ');
-			console.log(err);
-		}
-		else
-		{
-			console.log("Got "+tweet.length);
-			
-			//console.log(tweet);
-			tweet.forEach(function(el){
-				var to=el.user.name;
-				var tId=el.id_str;
-				if(self.context.lastReplyId < tId) self.context.lastReplyId = tId;
-
-				var params={};
-				params.dude=to;
-				params.id=tId;
-			
-				console.log('got Tweet');
-				console.log(el.text);
-				m=basicIA
-				.filter(function(el,i, arr){
-				  var test= el.re.test(this);
-				  console.log(test);
-				  return test;
-				},el.text)
-				.map(function(el){el.func(params)});
-
-				});
-
-		  self.save();
-		}	
-	}
-
-	this.client.get('statuses/mentions_timeline', param,  whatsAbout);
-	
-}
-
 /**
  * save the context
  */
@@ -360,10 +249,156 @@ DunjonMaster.prototype.show = function(image,msg,dude,repId)
 	}
 }
 //---------------------------------------------------------
-// Second level function
+
+/**
+ * Play a round
+ */
+DunjonMaster.prototype.round = function()
+{
+	var self=this;
+
+  // ------------------------------------------------------------------------------
+    var moveDown = function(p){
+		self.context.position.y-=1;
+		console.log("moved down");
+	};
+    var moveUp = function(p){
+		self.context.position.y+=1;
+		console.log("moved up");
+	};
+    var moveWest = function(p){
+		self.context.position.x-=1;
+		console.log("moved West");
+	};
+    var moveEast = function(p){
+		self.context.position.x+=1;
+		console.log("moved east");
+	};
+	var showMonster =function(p){
+        console.log(p);
+		self.show('streumA', 'En voila un par exemple',p.dude,p.id);
+	};
+	
+	var showHere = function(p){
+		var msg="Vous êtes en "+self.context.position.x+","+self.context.position.y+'.';
+		self.replyTo(p.id,p.dude,msg);
+		self.show('bifurcation', 'Voila ce que vous voyez',p.dude,p.id);
+	};
+
+	var showMap = function(p){
+		self.show('plan', 'Bonne route',p.dude,p.id);
+	};
+  
+	var showHelp = function(p){
+    var msg="Envoyez vos instructions à itreksjod.";
+    self.replyTo(p.id,p.dude,msg);
+    msg="Les rounds durent 5mn";
+    self.replyTo(p.id,p.dude,msg);
+    msg="Exemple de message : bouge, help, attaque,...";
+    self.replyTo(p.id,p.dude,msg);
+	};
+
+  var basicIA = [
+	{
+	  're':/nor[dt]h*|haut|monte/gi,
+	  'func':moveUp
+	},
+	{
+	  're':/droit|ea*st/gi,
+	  'func':moveEast
+	},
+	{
+	  're':/descend|bas|so*u[dt]h*/gi,
+	  'func':moveDown
+	},
+	{
+	  're':/gauch|o*[uw]est/gi,
+	  'func':moveWest
+	},
+	{
+	  're':/monstre/gi,
+	  'func':showMonster
+	},
+  {
+	  're':/o[uù].*suis.*je/gi,
+	  'func':showHere
+	},
+  {
+	  're':/inspecte/gi,
+	  'func':showHere
+	},
+  {
+	  're':/aide/gi,
+	  'func':showHelp
+	},
+  {
+	  're':/instruction/gi,
+	  'func':showHelp
+	},
+  {
+	  're':/help/gi,
+	  'func':showHelp
+	},
+	{
+	  're':/plan/gi,
+	  'func':showMap
+	},
+	{
+	  're':/carte/gi,
+	  'func':showMap
+	},
+  {
+	  're':/map/gi,
+	  'func':showMap
+	}
+	];
+	var param={
+		'since_id': self.context.lastReplyId
+	};
+
+	var whatsAbout = function(err,tweet,resp){
+		if(err){
+			console.log('round: ');
+			console.log(err);
+		}
+		else
+		{
+			console.log("Got "+tweet.length);
+			
+			//console.log(tweet);
+			tweet.forEach(function(el){
+				var to=el.user.name;
+				var tId=el.id_str;
+				if(self.context.lastReplyId < tId) self.context.lastReplyId = tId;
+
+				var params={};
+				params.dude=to;
+				params.id=tId;
+			
+				console.log('got Tweet');
+				console.log(el.text);
+				m=basicIA
+				.filter(function(el,i, arr){
+				  var test= el.re.test(this);
+				  console.log(test);
+				  return test;
+				},el.text)
+				.map(function(el){el.func(params)});
+
+				});
+
+		  self.save();
+		}	
+	}
+
+	this.client.get('statuses/mentions_timeline', param,  whatsAbout);
+	
+}
+
+
 
 bob=new DunjonMaster('Ruckus');
 
 //bob.say('Jouons à un jeu.');
-bob.watch();
-bob.launch(2*60*1000);
+bob.round();
+bob.launch(5*60*1000);
