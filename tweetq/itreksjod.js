@@ -1,14 +1,34 @@
 var marvel = require('marvel-characters');
+var fs=require('fs');
 var Twitter = require('twitter');
 var jsonfile = require('jsonfile');
-var boulet=require('./bouletquote');
+
 // I won't git commit it. You should create it by yourself.
 // or use any method you want
 var mycredentials=require('./mycredentials')
 
-
-
-
+var pix=[
+'bifurcation-droite',
+'bifurcation-gauche',
+'bifurcation',
+'couloir-droit',
+'couloir-porte',
+'entree',
+'escalier-montee',
+'impasse',
+'plan',
+'porte',
+'salle-tresor',
+'streumA',
+'streumB',
+'streumC',
+'streumD',
+'streumE',
+'streumF',
+'titre',
+'tournant-droite',
+'tournant-gauche'
+];
 
 /**
  * Dunjeon Master that  listen to request
@@ -32,7 +52,6 @@ var DunjonMaster = function (name)
 	access_token_key: mycredentials.access_token_key,
 	access_token_secret:mycredentials.access_token_secret 
   });
-  this.talkTimer={};
   this.watchTimer={};
 
   console.log("loading");
@@ -47,28 +66,27 @@ var DunjonMaster = function (name)
 			  console.log(obj.name + " found its saved game");
 			  console.log(obj)
 			  this.context=obj;
+			  this.say("ah. J'ai trouvé une vieille sauvegarde. utilisons là.");
 			};
-  // Bind or loose ref
 }
 
 /**
  * Launch every timer
  */
-DunjonMaster.prototype.launch = function(tTalk, tWatch)
+DunjonMaster.prototype.launch = function(tWatch)
 {
-  if ( tTalk == undefined ) tTalk=24*60*60*1000*Math.random();
-  if ( tWatch == undefined ) tWatch = 1*30*1000;
-  this.talkTimer =  setInterval(this.talk.bind(this), tTalk);
+  if ( tWatch == undefined ) tWatch = 1*60*1000;
   this.watchTimer=  setInterval(this.watch.bind(this), tWatch);
 
 }
 /**
- * Make a random general statement on twitter
+ * Say something
  */
 
-DunjonMaster.prototype.talk = function() {
+DunjonMaster.prototype.say = function(msg) {
 
 	var self = this;
+	if ( msg == undefined ) msg='.';
 
 	var  post_cb = function(err,tweet,resp){
 		if(err){
@@ -77,24 +95,15 @@ DunjonMaster.prototype.talk = function() {
 		else console.log("tweet sent");
 	};
 
-	var generateText=function()
-	{
-	  var a=marvel();
-	
-	  if(Math.random()<0.3) return self.context.name+" does not like "+a;
-	  if(Math.random()<0.6) return self.context.name+" likes "+a;
-	   return self.context.name+" does not care about "+a;
-	}
 
 	var param={
-	  'status':generateText(),
+	  'status':msg,
 	  'possibly_sensitive':false,
 	  'lat':2.333444,
 	  'long':12.333333,
 	  'place':'df51dec6f4ee2b2c'
 	};
 
-	console.log(this.context.name+" said");
 	this.client.post('statuses/update', param,  post_cb);
 
 };
@@ -189,8 +198,8 @@ DunjonMaster.prototype.watch = function()
 				var tId=el.id_str;
 				if(self.context.lastReplyId < tId) self.context.lastReplyId = tId;
 
-				var quote =  boulet.quotes[Math.floor(Math.random()*boulet.quotes.length)];
-				self.replyTo(tId,to,quote);
+				var p =  pix[Math.floor(Math.random()*pix.length)];
+				self.show(p,'Tiens ',to,tId);
 				});
 
 		  self.save();
@@ -237,6 +246,49 @@ DunjonMaster.prototype.listenTo = function(dude)
 	});
 }
 
+/**
+ * Show an image
+ */
+DunjonMaster.prototype.show = function(image,msg,dude,repId)
+{
+
+	var self = this;
+	if ( msg == undefined ) msg='.';
+	if (dude) msg='@'+dude+' '+msg;
+	if ( image == undefined ) 
+	{
+		image='plan';
+		msg="Voici la plan";
+	}
+	// Load your image
+	var data = fs.readFileSync('./img/'+image+'.jpg');
+	if (data != null )
+	{
+		// Make post request on media endpoint. Pass file data as media parameter
+		self.client.post('media/upload', {media: data}, function(error, media, response){
+
+		if (!error) {
+
+			// Lets tweet it
+			var status = {
+				status: msg,
+				media_ids: media.media_id_string // Pass the media id string
+			};
+            if(repId) status.in_reply_to_status_id = repId;
+
+			self.client.post('statuses/update', status, function(error, tweet, response){
+				if(!error) console.log("Image sent");
+			});
+		  }
+		  else {
+			console.log(" Show error :");
+			console.log(error);
+		}
+		});
+	}
+}
+
+
 bob=new DunjonMaster('Ruckus');
-bob.talk();
-bob.watch();
+bob.say('Jouons à un jeu.');
+bob.launch(30*1000);
