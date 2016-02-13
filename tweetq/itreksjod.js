@@ -251,8 +251,21 @@ DunjonMaster.prototype.round = function()
 
   // ------------------------------------------------------------------------------
     var moveDown = function(p){
+	   var w=self.map[self.context.position]['sud'];
+       console.log(w);	
+       self.context.orientation='sud';
+	   if(w == 'rien'){
+			var msg="Il y a un mur. Je ne peux pas avancer vers le sud.";
+			self.replyTo(p.id,p.dude,msg);
+		}	
+		else {
+			self.context.position = w;
+            console.log("Now into "+w);
+			showHere(p);
+		}
     		
 	};
+
     var moveUp = function(p){
 	   var w=self.map[self.context.position]['nord'];
        console.log(w);	
@@ -263,12 +276,39 @@ DunjonMaster.prototype.round = function()
 		}	
 		else {
 			self.context.position = w;
+            console.log("Now into "+w);
+			showHere(p);
 		}
 	};
     var moveWest = function(p){
+	   var w=self.map[self.context.position]['ouest'];
+       console.log(w);	
+       self.context.orientation='ouest';
+	   if(w == 'rien'){
+			var msg="Il y a un mur. Je ne peux pas avancer vers l Ouest.";
+			self.replyTo(p.id,p.dude,msg);
+		}	
+		else {
+			self.context.position = w;
+            console.log("Now into "+w);
+			showHere(p);
+		}
 	};
     var moveEast = function(p){
+	   var w=self.map[self.context.position]['est'];
+       console.log(w);	
+       self.context.orientation='ouest';
+	   if(w == 'rien'){
+			var msg="Il y a un mur. Je ne peux pas avancer vers l est.";
+			self.replyTo(p.id,p.dude,msg);
+		}	
+		else {
+			self.context.position = w;
+            console.log("Now into "+w);
+			showHere(p);
+		}
 	};
+  // ------------------------------------------------------------------------------
 
 	var showMonster =function(p){
         console.log(p);
@@ -309,7 +349,7 @@ DunjonMaster.prototype.round = function()
 	  'func':moveUp
 	},
 	{
-	  're':/droit|ea*st/gi,
+	  're':/droit|[' ]ea*st/gi,
 	  'func':moveEast
 	},
 	{
@@ -405,4 +445,4 @@ bob=new DunjonMaster('Ruckus');
 
 //bob.say('Jouons à un jeu.');
 bob.round();
-bob.launch(5*60*1000);
+bob.launch(30*1000);
