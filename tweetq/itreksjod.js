@@ -366,4 +366,4 @@ bob=new DunjonMaster('Ruckus');
 
 //bob.say('Jouons à un jeu.');
 bob.watch();
-bob.launch(20*1000);
+bob.launch(2*60*1000);
