@@ -32,6 +32,8 @@ var DunjonMaster = function (name)
 	access_token_key: mycredentials.access_token_key,
 	access_token_secret:mycredentials.access_token_secret 
   });
+  this.talkTimer={};
+  this.watchTimer={};
 
   console.log("loading");
   var self=this;
@@ -47,11 +49,19 @@ var DunjonMaster = function (name)
 			  this.context=obj;
 			};
   // Bind or loose ref
-  var t=24*60*60*1000*Math.random();
-  this.timer =  setInterval(this.talk.bind(this), t);
-  this.timer =  setInterval(this.watch.bind(this), 1*30*1000);
 }
 
+/**
+ * Launch every timer
+ */
+DunjonMaster.prototype.launch = function(tTalk, tWatch)
+{
+  if ( tTalk == undefined ) tTalk=24*60*60*1000*Math.random();
+  if ( tWatch == undefined ) tWatch = 1*30*1000;
+  this.talkTimer =  setInterval(this.talk.bind(this), tTalk);
+  this.watchTimer=  setInterval(this.watch.bind(this), tWatch);
+
+}
 /**
  * Make a random general statement on twitter
  */
