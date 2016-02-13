@@ -177,8 +177,29 @@ DunjonMaster.prototype.watch = function()
 {
 	var self=this;
 
+	// Warning. This is not self. It's the calling params
+	var showMonster =function(p){
+        console.log(p);
+		self.show('streumA', 'En voila un par exemple',p.dude,p.id);
+	};
+	
+	var showMap = function(p){
+		self.show('plan', 'Bonne route',p.dude,p.id);
+	};
+
+	var basicIA =[
+	{
+	  're':/monstre/gi,
+	  'func':showMonster
+	},
+	{
+	  're':/plan/gi,
+	  'func':showMap
+	}
+	];
+
+
 	var param={
-		'count': 200,
 		'since_id': self.context.lastReplyId
 	};
 
@@ -198,8 +219,20 @@ DunjonMaster.prototype.watch = function()
 				var tId=el.id_str;
 				if(self.context.lastReplyId < tId) self.context.lastReplyId = tId;
 
-				var p =  pix[Math.floor(Math.random()*pix.length)];
-				self.show(p,'Tiens ',to,tId);
+				var params={};
+				params.dude=to;
+				params.id=tId;
+			
+				console.log('got Tweet');
+				console.log(el.text);
+				m=basicIA
+				.filter(function(el,i, arr){
+				  var test= el.re.test(this);
+				  console.log(test);
+				  return test;
+				},el.text)
+				.map(function(el){el.func(params)});
+
 				});
 
 		  self.save();
@@ -252,6 +285,7 @@ DunjonMaster.prototype.listenTo = function(dude)
 DunjonMaster.prototype.show = function(image,msg,dude,repId)
 {
 
+     
 	var self = this;
 	if ( msg == undefined ) msg='.';
 	if (dude) msg='@'+dude+' '+msg;
@@ -287,8 +321,11 @@ DunjonMaster.prototype.show = function(image,msg,dude,repId)
 		});
 	}
 }
-
+//---------------------------------------------------------
+// Second level function
 
 bob=new DunjonMaster('Ruckus');
-bob.say('Jouons à un jeu.');
-bob.launch(30*1000);
+
+//bob.say('Jouons à un jeu.');
+bob.watch();
+bob.launch(20*1000);
