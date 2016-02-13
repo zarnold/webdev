@@ -260,19 +260,23 @@ DunjonMaster.prototype.round = function()
   // ------------------------------------------------------------------------------
     var moveDown = function(p){
 		self.context.position.y-=1;
-		console.log("moved down");
+		var msg="Voilà. Vous êtes en "+self.context.position.x+","+self.context.position.y+'.';
+		self.replyTo(p.id,p.dude,msg);
 	};
     var moveUp = function(p){
 		self.context.position.y+=1;
-		console.log("moved up");
+		var msg="Voilà. Vous êtes en "+self.context.position.x+","+self.context.position.y+'.';
+		self.replyTo(p.id,p.dude,msg);
 	};
     var moveWest = function(p){
 		self.context.position.x-=1;
-		console.log("moved West");
+		var msg="Voilà. Vous êtes en "+self.context.position.x+","+self.context.position.y+'.';
+		self.replyTo(p.id,p.dude,msg);
 	};
     var moveEast = function(p){
 		self.context.position.x+=1;
-		console.log("moved east");
+		var msg="Voilà. Vous êtes en "+self.context.position.x+","+self.context.position.y+'.';
+		self.replyTo(p.id,p.dude,msg);
 	};
 	var showMonster =function(p){
         console.log(p);
@@ -320,7 +324,7 @@ DunjonMaster.prototype.round = function()
 	  'func':showMonster
 	},
   {
-	  're':/o[uù].*suis.*je/gi,
+	  're':/o[uù].*suis/gi,
 	  'func':showHere
 	},
   {
@@ -367,7 +371,7 @@ DunjonMaster.prototype.round = function()
 			
 			//console.log(tweet);
 			tweet.forEach(function(el){
-				var to=el.user.name;
+				var to=el.user.screen_name;
 				var tId=el.id_str;
 				if(self.context.lastReplyId < tId) self.context.lastReplyId = tId;
 
