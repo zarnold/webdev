@@ -1,8 +1,7 @@
 {
   "name": "Gary",
-  "lastReplyId": "698599908815802368",
-  "position": {
-    "x": 5,
-    "y": 4
-  }
+  "lastReplyId": "698616168182108160",
+  "position": "case_1",
+  "orientation": "nord",
+  "currentLevel": "niveau_1"
 }

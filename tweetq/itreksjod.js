@@ -7,29 +7,6 @@ var jsonfile = require('jsonfile');
 // or use any method you want
 var mycredentials=require('./mycredentials')
 
-var pix=[
-'bifurcation-droite',
-'bifurcation-gauche',
-'bifurcation',
-'couloir-droit',
-'couloir-porte',
-'entree',
-'escalier-montee',
-'impasse',
-'plan',
-'porte',
-'salle-tresor',
-'streumA',
-'streumB',
-'streumC',
-'streumD',
-'streumE',
-'streumF',
-'titre',
-'tournant-droite',
-'tournant-gauche'
-];
-
 /**
  * Dunjeon Master that  listen to request
  * and answer
@@ -45,7 +22,12 @@ var DunjonMaster = function (name)
   this.context={};
   this.context.name = name;
   this.context.lastReplyId=14927799;
-  this.context.position={'x':0,'y':0};
+  this.context.position='case_0';
+  this.context.orientation='nord';
+  this.context.currentLevel='niveau_1';
+
+  this.map={};
+
   this.timeline="itreksjod";
   this.client = new Twitter({
 	consumer_key: mycredentials.consumer_key,
@@ -58,17 +40,28 @@ var DunjonMaster = function (name)
   console.log("loading");
   var self=this;
 
+  
   var file = 'data.json';
-  obj = jsonfile.readFileSync(file)
-		  if(!obj){ 
-			  console.log("error.did not find "+file);
-			}
-		  else{
-			  console.log(obj.name + " found its saved game");
-			  console.log(obj)
-			  this.context=obj;
-			  this.say("ah. J'ai trouvé une vieille sauvegarde. utilisons là.");
-			};
+  obj = jsonfile.readFileSync(file);
+  if(!obj){ 
+	  console.log("error.did not find "+file);
+	}
+  else{
+	  console.log(obj.name + " found its saved game");
+	  this.context=obj;
+	  this.say("ah. J'ai trouvé une vieille sauvegarde. utilisons là.");
+	};
+
+  var file = this.context.currentLevel+'.json';
+  console.log("Loading "+file+"...");
+  obj = jsonfile.readFileSync(file);
+  if(!obj){ 
+	  console.log("error.did not find "+file);
+	}
+  else{
+	  this.map=obj
+      console.log(this.map.case_0);
+	};
 }
 
 /**
@@ -179,7 +172,6 @@ DunjonMaster.prototype.save = function()
 	console.log("Saving...");
 	var file = 'data.json'
 	var obj=this.context; 
-    console.log(obj);
 	jsonfile.writeFile(file, obj, {spaces: 2}, function(err) {
 			console.error(err)
 			})
@@ -212,7 +204,7 @@ DunjonMaster.prototype.listenTo = function(dude)
 DunjonMaster.prototype.show = function(image,msg,dude,repId)
 {
 
-     
+    console.log("Trying to post "+image); 
 	var self = this;
 	if ( msg == undefined ) msg='.';
 	if (dude) msg='@'+dude+' '+msg;
@@ -259,34 +251,43 @@ DunjonMaster.prototype.round = function()
 
   // ------------------------------------------------------------------------------
     var moveDown = function(p){
-		self.context.position.y-=1;
-		var msg="Voilà. Vous êtes en "+self.context.position.x+","+self.context.position.y+'.';
-		self.replyTo(p.id,p.dude,msg);
+    		
 	};
     var moveUp = function(p){
-		self.context.position.y+=1;
-		var msg="Voilà. Vous êtes en "+self.context.position.x+","+self.context.position.y+'.';
-		self.replyTo(p.id,p.dude,msg);
+	   var w=self.map[self.context.position]['nord'];
+       console.log(w);	
+       self.context.orientation='nord';
+	   if(w == 'rien'){
+			var msg="Il y a un mur. Je ne peux pas avancer vers le Nord.";
+			self.replyTo(p.id,p.dude,msg);
+		}	
+		else {
+			self.context.position = w;
+		}
 	};
     var moveWest = function(p){
-		self.context.position.x-=1;
-		var msg="Voilà. Vous êtes en "+self.context.position.x+","+self.context.position.y+'.';
-		self.replyTo(p.id,p.dude,msg);
 	};
     var moveEast = function(p){
-		self.context.position.x+=1;
-		var msg="Voilà. Vous êtes en "+self.context.position.x+","+self.context.position.y+'.';
-		self.replyTo(p.id,p.dude,msg);
 	};
+
 	var showMonster =function(p){
         console.log(p);
 		self.show('streumA', 'En voila un par exemple',p.dude,p.id);
 	};
 	
 	var showHere = function(p){
-		var msg="Vous êtes en "+self.context.position.x+","+self.context.position.y+'.';
-		self.replyTo(p.id,p.dude,msg);
-		self.show('bifurcation', 'Voila ce que vous voyez',p.dude,p.id);
+        console.log(self.context.position);
+        var mg = self.map[self.context.position].vue[self.context.orientation];
+		if (mg != 'rien' )
+		{
+			var msg=self.map[self.context.position]['description'];
+			self.show(mg, msg,p.dude,p.id);
+		}
+		else
+		{
+			var msg="Vous êtes face au mur. Vous ne voyez rien.";
+			self.replyTo(p.id,p.dude,msg);
+		}
 	};
 
 	var showMap = function(p){
@@ -328,7 +329,7 @@ DunjonMaster.prototype.round = function()
 	  'func':showHere
 	},
   {
-	  're':/inspecte/gi,
+	  're':/inspect/gi,
 	  'func':showHere
 	},
   {
@@ -384,7 +385,6 @@ DunjonMaster.prototype.round = function()
 				m=basicIA
 				.filter(function(el,i, arr){
 				  var test= el.re.test(this);
-				  console.log(test);
 				  return test;
 				},el.text)
 				.map(function(el){el.func(params)});
