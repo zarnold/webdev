@@ -177,33 +177,71 @@ DunjonMaster.prototype.watch = function()
 {
 	var self=this;
 
-	// Warning. This is not self. It's the calling params
+  // ------------------------------------------------------------------------------
 	var showMonster =function(p){
         console.log(p);
 		self.show('streumA', 'En voila un par exemple',p.dude,p.id);
 	};
 	
+	var showHere = function(p){
+		self.show('bifurcation', 'Voila ce que vous voyez',p.dude,p.id);
+	};
+
 	var showMap = function(p){
 		self.show('plan', 'Bonne route',p.dude,p.id);
 	};
+  
+	var showHelp = function(p){
+    var msg="Envoyez vos instructions à itreksjod.";
+    self.replyTo(p.id,p.dude,msg);
+    msg="Les rounds durent 5mn";
+    self.replyTo(p.id,p.dude,msg);
+    msg="Exemple de message : bouge, help, attaque,...";
+    self.replyTo(p.id,p.dude,msg);
+	};
 
-	var basicIA =[
+  var basicIA = [
 	{
 	  're':/monstre/gi,
 	  'func':showMonster
 	},
+  {
+	  're':/o[uù].*suis.*je/gi,
+	  'func':showHere
+	},
+  {
+	  're':/inspecte/gi,
+	  'func':showHere
+	},
+  {
+	  're':/aide/gi,
+	  'func':showHelp
+	},
+  {
+	  're':/instruction/gi,
+	  'func':showHelp
+	},
+  {
+	  're':/help/gi,
+	  'func':showHelp
+	},
 	{
 	  're':/plan/gi,
 	  'func':showMap
+	},
+	{
+	  're':/carte/gi,
+	  'func':showMap
+	},
+  {
+	  're':/map/gi,
+	  'func':showMap
 	}
 	];
-
-
 	var param={
 		'since_id': self.context.lastReplyId
 	};
 
-	console.log(param);
 	var whatsAbout = function(err,tweet,resp){
 		if(err){
 			console.log('watch : ');
