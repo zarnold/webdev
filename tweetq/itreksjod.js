@@ -19,15 +19,16 @@ var DunjonMaster = function (name)
   
   if (name == undefined) name = "randomDude";
 
-  this.context={};
-  this.context.name = name;
-  this.context.lastReplyId=14927799;
-  this.context.position='case_0';
-  this.context.orientation='nord';
-  this.context.currentLevel='niveau_1';
+  this.game={};
+  this.game.name = name;
+  this.game.lastReplyId=14927799;
+  this.game.position='case_0';
+  this.game.orientation='nord';
+  this.game.currentLevel='niveau_1';
 
   this.map={};
 
+  
   this.timeline="itreksjod";
   this.client = new Twitter({
 	consumer_key: mycredentials.consumer_key,
@@ -48,11 +49,11 @@ var DunjonMaster = function (name)
 	}
   else{
 	  console.log(obj.name + " found its saved game");
-	  this.context=obj;
+	  this.game=obj;
 	  this.say("ah. J'ai trouvé une vieille sauvegarde. utilisons là.");
 	};
 
-  var file = this.context.currentLevel+'.json';
+  var file = this.game.currentLevel+'.json';
   console.log("Loading "+file+"...");
   obj = jsonfile.readFileSync(file);
   if(!obj){ 
@@ -60,7 +61,7 @@ var DunjonMaster = function (name)
 	}
   else{
 	  this.map=obj
-      console.log(this.map.case_0);
+	  console.log("File found !");
 	};
 }
 
@@ -128,7 +129,7 @@ DunjonMaster.prototype.replyTo = function(id,dude,blabla) {
 	  'place':'df51dec6f4ee2b2c'
 	};
 
-	console.log(this.context.name+" replied  "+myTweet +' to ' + id );
+	console.log(this.game.name+" replied  "+myTweet +' to ' + id );
 	this.client.post('statuses/update', param,  post_cb);
 }
 
@@ -160,18 +161,18 @@ DunjonMaster.prototype.talkTo = function(dude,blabla) {
 	  'place':'df51dec6f4ee2b2c'
 	};
 
-	console.log(this.context.name+" says "+myTweet );
+	console.log(this.game.name+" says "+myTweet );
 	this.client.post('statuses/update', param,  post_cb);
 }
 /**
- * save the context
+ * save the game
  */
 DunjonMaster.prototype.save = function()
 {
 	var obj={};
 	console.log("Saving...");
 	var file = 'data.json'
-	var obj=this.context; 
+	var obj=this.game; 
 	jsonfile.writeFile(file, obj, {spaces: 2}, function(err) {
 			console.error(err)
 			})
@@ -244,69 +245,85 @@ DunjonMaster.prototype.show = function(image,msg,dude,repId)
 
 /**
  * Play a round
+ * This function is quite messy because of
+ * keeping the scope.
+ * regexp map to functions only if
+ * scope is the same.
  */
 DunjonMaster.prototype.round = function()
 {
+	this.game.round++;
+    console.log("================ Round "+this.game.round);
 	var self=this;
 
+	// Init votes fpr this round to 0
+    var votes={
+			'nord':0,
+			'sud':0,
+			'est':0,
+			'ouest':0
+		};
+
   // ------------------------------------------------------------------------------
-    var moveDown = function(p){
-	   var w=self.map[self.context.position]['sud'];
-       console.log(w);	
-       self.context.orientation='sud';
-	   if(w == 'rien'){
-			var msg="Il y a un mur. Je ne peux pas avancer vers le sud.";
-			self.replyTo(p.id,p.dude,msg);
-		}	
-		else {
-			self.context.position = w;
-            console.log("Now into "+w);
-			showHere(p);
+    var move = function(){
+		
+		// ------ Majority vote
+        var direction='none';
+		var previousVote=0
+
+		for (var key in votes){
+			if(votes[key]> previousVote)
+			{	
+				direction=key;
+				previousVote=votes[key];
+			}
+		};
+		
+		if (direction != 'none')
+		{
+			console.log("direction choisit : "+direction);
+			var w=self.map[self.game.position][direction];
+			console.log(w);	
+			self.game.orientation=direction;
+			if(w == 'rien'){
+				var msg="Il y a un mur. Je ne peux pas avancer dans cette direction ("+direction+").";
+			}	
+			else {
+				self.game.position = w;
+				console.log("Now into "+w);
+				var msg="== Round " + self.game.round +" : La majorité a parlé, j avance vers : "+direction;
+				self.say(msg);
+				var mg = self.map[self.game.position].vue[self.game.orientation];
+				if (mg != 'rien' )
+				{
+					var msg=self.map[self.game.position]['description'];
+					self.show(mg, msg);
+				}
+				else
+				{
+					var msg="Vous êtes face au mur. Vous ne voyez rien.";
+					self.say(msg);
+				}
+			}
 		}
-    		
 	};
 
-    var moveUp = function(p){
-	   var w=self.map[self.context.position]['nord'];
-       console.log(w);	
-       self.context.orientation='nord';
-	   if(w == 'rien'){
-			var msg="Il y a un mur. Je ne peux pas avancer vers le Nord.";
-			self.replyTo(p.id,p.dude,msg);
-		}	
-		else {
-			self.context.position = w;
-            console.log("Now into "+w);
-			showHere(p);
-		}
+    var moveDown = function(){
+		console.log('+1 vote pour sud');
+		votes['sud']+=1;
 	};
-    var moveWest = function(p){
-	   var w=self.map[self.context.position]['ouest'];
-       console.log(w);	
-       self.context.orientation='ouest';
-	   if(w == 'rien'){
-			var msg="Il y a un mur. Je ne peux pas avancer vers l Ouest.";
-			self.replyTo(p.id,p.dude,msg);
-		}	
-		else {
-			self.context.position = w;
-            console.log("Now into "+w);
-			showHere(p);
-		}
+
+    var moveUp = function(){
+		console.log('+1 vote pour nord');
+		votes['nord']+=1;
 	};
-    var moveEast = function(p){
-	   var w=self.map[self.context.position]['est'];
-       console.log(w);	
-       self.context.orientation='ouest';
-	   if(w == 'rien'){
-			var msg="Il y a un mur. Je ne peux pas avancer vers l est.";
-			self.replyTo(p.id,p.dude,msg);
-		}	
-		else {
-			self.context.position = w;
-            console.log("Now into "+w);
-			showHere(p);
-		}
+    var moveWest = function(){
+		console.log('+1 vote pour ouest');
+		votes['ouest']+=1;
+	};
+    var moveEast = function(){
+		console.log('+1 vote pour est');
+		votes['est']+=1;
 	};
   // ------------------------------------------------------------------------------
 
@@ -316,11 +333,11 @@ DunjonMaster.prototype.round = function()
 	};
 	
 	var showHere = function(p){
-        console.log(self.context.position);
-        var mg = self.map[self.context.position].vue[self.context.orientation];
+        console.log(self.game.position);
+        var mg = self.map[self.game.position].vue[self.game.orientation];
 		if (mg != 'rien' )
 		{
-			var msg=self.map[self.context.position]['description'];
+			var msg=self.map[self.game.position]['description'];
 			self.show(mg, msg,p.dude,p.id);
 		}
 		else
@@ -398,7 +415,7 @@ DunjonMaster.prototype.round = function()
 	}
 	];
 	var param={
-		'since_id': self.context.lastReplyId
+		'since_id': self.game.lastReplyId
 	};
 
 	var whatsAbout = function(err,tweet,resp){
@@ -414,14 +431,14 @@ DunjonMaster.prototype.round = function()
 			tweet.forEach(function(el){
 				var to=el.user.screen_name;
 				var tId=el.id_str;
-				if(self.context.lastReplyId < tId) self.context.lastReplyId = tId;
+				if(self.game.lastReplyId < tId) self.game.lastReplyId = tId;
 
 				var params={};
 				params.dude=to;
 				params.id=tId;
-			
-				console.log('got Tweet');
+				console.log('- Got Tweet : ');
 				console.log(el.text);
+
 				m=basicIA
 				.filter(function(el,i, arr){
 				  var test= el.re.test(this);
@@ -430,7 +447,8 @@ DunjonMaster.prototype.round = function()
 				.map(function(el){el.func(params)});
 
 				});
-
+		  
+		  move();
 		  self.save();
 		}	
 	}
@@ -445,4 +463,4 @@ bob=new DunjonMaster('Ruckus');
 
 //bob.say('Jouons à un jeu.');
 bob.round();
-bob.launch(30*1000);
+bob.launch(50*1000);
