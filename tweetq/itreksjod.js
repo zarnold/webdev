@@ -352,12 +352,14 @@ DunjonMaster.prototype.round = function()
 	};
   
 	var showHelp = function(p){
-    var msg="Envoyez vos instructions à itreksjod.";
-    self.replyTo(p.id,p.dude,msg);
-    msg="Les rounds durent 5mn";
-    self.replyTo(p.id,p.dude,msg);
-    msg="Exemple de message : bouge, help, attaque,...";
-    self.replyTo(p.id,p.dude,msg);
+		var msg="Envoyez vos instructions à itreksjod.";
+		self.replyTo(p.id,p.dude,msg);
+		msg="Les rounds durent 5mn";
+		self.replyTo(p.id,p.dude,msg);
+		msg="Exemple de message : bouge vers le nord, help, attaque, montre carte, inspecte, ...";
+		self.replyTo(p.id,p.dude,msg);
+		msg="Pour les déplacements,c est le vote majoritaire qui est choisit.";
+		self.replyTo(p.id,p.dude,msg);
 	};
 
   var basicIA = [
