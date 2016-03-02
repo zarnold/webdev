@@ -67,6 +67,10 @@ BOULET_LIVES.MODEL.PRODUCTS.player = function(){
 
   var DEBUG_TRACE = true;
 
+  STOP=0;
+  RUN=1;
+  PAUSE=2;
+
   KEY_LEFT = 37;
   KEY_RIGHT = 39;
   KEY_UP = 38;
@@ -77,7 +81,10 @@ BOULET_LIVES.MODEL.PRODUCTS.player = function(){
   KEY_S=83;
   KEY_Z=90;
 
-  var comic = {};
+  var lives_cont = {};
+  var control_button = {};
+	var state=STOP;
+  var timer_handle = {};
 
   var SERVER_INFO = {
     server: 'http://app.cepcam.org/bdd',
@@ -121,6 +128,31 @@ BOULET_LIVES.MODEL.PRODUCTS.player = function(){
     //wahterver the error, getout
     if (episode.error) return;
 
+        control_button.onclick = function(event){
+          printTrace('Click click');
+          printTrace('Current image: '+currentCase);
+
+		  if (state == STOP )
+			{
+				console.log("STOP TO RUN");
+				timer_handle = setInterval(nextPage,60);
+				state = RUN;
+				return;
+			}
+		  if (state == RUN)
+			{
+				console.log("RUN TO PAUSE");
+				clearInterval(timer_handle);
+				state = PAUSE;
+				return;	
+			}
+		  if (state == PAUSE)
+			{
+				state = STOP;
+				resetPage();
+				return
+			}
+        }
     
     //At this step, episode object must contain the 'cases' url
 
@@ -138,27 +170,13 @@ BOULET_LIVES.MODEL.PRODUCTS.player = function(){
       casesArray.push(caseImage);
 
       caseImage.onload = function(){
-        comic.appendChild(caseImage);
+        lives_cont.appendChild(caseImage);
         caseImage.style.width="100%";
         if(i!=0) caseImage.style.display = "none";
 
         var width=caseImage.width;
 
-        caseImage.onclick = function(event){
-          printTrace('Click click');
-          printTrace('Current image: '+currentCase);
 
-          var x;
-          if (event.offsetX !== undefined && event.offsetY !== undefined)
-            x = event.offsetX;
-          else
-            x = event.layerX;
-
-          printTrace("X click is :"+x+' to '+width);
-
-          if(x>width/2) nextPage();
-          else previousPage();
-        }
       };
     })
 
@@ -166,7 +184,13 @@ BOULET_LIVES.MODEL.PRODUCTS.player = function(){
 
   }
 
-
+var resetPage = function()
+{
+	printTrace('Go start');
+    casesArray[currentCase].style.display="none";
+     currentCase=0;
+    casesArray[currentCase].style.display="initial";
+}
 var nextPage = function()
 {
   printTrace('Next page');
@@ -178,16 +202,8 @@ var nextPage = function()
   }
   else
   {
-    window.open('http://www.lafautealamanette.org', '_blank');
-  }
-}
-var previousPage = function()
-{
-  printTrace('Previous page');
-
-  if(currentCase>0){
     casesArray[currentCase].style.display="none";
-     currentCase--;
+     currentCase=1;
     casesArray[currentCase].style.display="initial";
   }
 }
@@ -250,23 +266,17 @@ var previousPage = function()
     printTrace("Processing Datas");
     
     //Check the comics tagsa via the DOMStringMap
-    comic = document.querySelector('#manganese');
-
-    if(comic)
+    lives_cont = document.querySelector('#lives');
+    if(lives_cont)
     {
-      printTrace(" Found comic tag");
-
-      comic.dataset.author ? comicsInfo.author=comic.dataset.author : printTrace("No author attribute");
-      comic.dataset.serie ? comicsInfo.serie=comic.dataset.serie : printTrace("No serie attribute");
-      comic.dataset.episode ? comicsInfo.episode=comic.dataset.episode : printTrace("No episode attribute");
-      comic.dataset.lang ? comicsInfo.lang=comic.dataset.lang : printTrace("No lang attribute");
-      //So now get the attributes
+      printTrace(" Found lives container tag");
 
     }
     else
     {
       printTrace("[ERROR] Havent found comics tag");
     }
+	control_button =  document.querySelector('#control');
   }
 
 //*****************************************
