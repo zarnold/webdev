@@ -1,3 +1,6 @@
+// TODO
+// Implementer les commandes va tout droit, demi tour et retourne toi
+
 var marvel = require('marvel-characters');
 var fs=require('fs');
 var Twitter = require('twitter');
