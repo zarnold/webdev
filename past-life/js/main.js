@@ -99,6 +99,7 @@ BOULET_LIVES.MODEL.PRODUCTS.player = function(){
     author: 'any'
   };
 
+  var imageList=[];
   var episode={};
   var currentCase=0;
   var maxCase=0;
@@ -123,10 +124,6 @@ BOULET_LIVES.MODEL.PRODUCTS.player = function(){
 
   var displayComics = function()
   {
-    //TODO bind  click event to hide/display case
-
-    //wahterver the error, getout
-    if (episode.error) return;
 
         control_button.onclick = function(event){
           printTrace('Click click');
@@ -154,34 +151,21 @@ BOULET_LIVES.MODEL.PRODUCTS.player = function(){
 			}
         }
     
-    //At this step, episode object must contain the 'cases' url
-
-    /*
-    var screen=document.createElement("h6");
-    screen.innerHTML='Retrouvez un épisode de '+ episode.serie+' offert par <a href="http://spunchcomics.com">Spunchcomics</a>. Cliquez à droite de l\'image pour avancer, à gauche pour reculer';
-    comic.appendChild(screen);
-      */
     currentCase = 0;
-    maxCase = episode.cases.length;
-    episode.cases.forEach(function(el,i){
+    maxCase = imageList.length;
+    imageList.forEach(function(el,i){
       var caseImage = new Image();
 
-      caseImage.src=el.url;
+      caseImage.src="./img/"+el;
       casesArray.push(caseImage);
 
       caseImage.onload = function(){
         lives_cont.appendChild(caseImage);
         caseImage.style.width="100%";
         if(i!=0) caseImage.style.display = "none";
-
         var width=caseImage.width;
-
-
       };
     })
-
-
-
   }
 
 var resetPage = function()
@@ -191,21 +175,14 @@ var resetPage = function()
      currentCase=0;
     casesArray[currentCase].style.display="initial";
 }
+
 var nextPage = function()
 {
   printTrace('Next page');
-
-  if(currentCase<maxCase-1){
-    casesArray[currentCase].style.display="none";
-     currentCase++;
-    casesArray[currentCase].style.display="initial";
-  }
-  else
-  {
-    casesArray[currentCase].style.display="none";
-     currentCase=1;
-    casesArray[currentCase].style.display="initial";
-  }
+  casesArray[currentCase].style.display="none";
+  currentCase = Math.floor(Math.random()*casesArray.length);
+  if (currentCase == 0) currentCase = 1;
+  casesArray[currentCase].style.display="initial";
 }
 //*****************************************
   /******************************************
@@ -217,39 +194,11 @@ var nextPage = function()
     printTrace('Getting Comics');
 
     //First build the URL from data fecthing from host page
-    var comicURL;
+    var comicURL="./js/img.json";
 
-    comicsInfo.author = comicsInfo.author.toLowerCase();
-    comicsInfo.serie = comicsInfo.serie.toLowerCase();
-
-    comicsInfo.author = comicsInfo.author.replace(" ","-","gi");
-    comicsInfo.serie = comicsInfo.serie.replace(" ","-","gi");
-    comicsInfo.author = comicsInfo.episode.replace(" ","-","gi");
-    comicsInfo.lang= comicsInfo.lang.replace(" ","-","gi");
-
-    printComics();
-
-    if(comicsInfo.serie === 'last')
-    {
-      comicURL = SERVER_INFO.server + '/' + SERVER_INFO.publisher + '/' + SERVER_INFO.collection + '/last_fr/index.json' ;
-    }
-    else if(comicsInfo.episode === 'last' )
-    {
-      comicURL = SERVER_INFO.server + '/' + SERVER_INFO.publisher + '/' + SERVER_INFO.collection + '/sharable/'+comicsInfo.serie+'/index.json' ;
-    }
-    else
-    {
-      comicURL = SERVER_INFO.server + '/' + SERVER_INFO.publisher + '/' + SERVER_INFO.collection + '/sharable/'+comicsInfo.serie+'/'+comicsInfo.episode+'/index.json' ;
-    }
     fetchJSON(comicURL,function(data){
-
-      episode={'error':500};
-      //this ugly cause of a bad server API
-      if(data.episodes)  episode = data.episodes[data.episodes.length-1] ;
-      if(data.series) episode = data.series[0];
-      if(data.authors ) episode = data;
-
-
+      imageList = data.images;
+      console.log(imageList);
       displayComics();
 
     });
