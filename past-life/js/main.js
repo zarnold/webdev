@@ -85,21 +85,50 @@ BOULET_LIVES.MODEL.PRODUCTS.player = function(){
   var control_button = {};
 	var state=STOP;
   var timer_handle = {};
+  var control_image={};
 
-  var SERVER_INFO = {
-    server: 'http://app.cepcam.org/bdd',
-    publisher: 'cepcam',
-    collection: 'spunch'
-  };
+  // A local json loading would be better. But Wordpress and static files is a
+  // mess
+  var imageList=
+  [
+	"01.png",
+	"02.png",
+	"03.png",
+	"04.png",
+	"05.png",
+	"06.png",
+	"07.png",
+	"08.png",
+	"09.png",
+	"10.png",
+	"11.png",
+	"12.png",
+	"13.png",
+	"14.png",
+	"15.png",
+	"16.png",
+	"17.png",
+	"18.png",
+	"19.png",
+	"20.png",
+	"21.png",
+	"22.png",
+	"23.png",
+	"24.png",
+	"25.png",
+	"26.png",
+	"27.png",
+	"28.png",
+	"29.png",
+	"30.png",
+	"31.png",
+	"32.png",
+	"33.png",
+	"34.png",
+	"35.png",
+  "36.png",
+  "37.png"];
 
-  var comicsInfo = {
-    serie: 'last',
-    episode: 'last',
-    lang: 'FR',
-    author: 'any'
-  };
-
-  var imageList=[];
   var episode={};
   var currentCase=0;
   var maxCase=0;
@@ -110,8 +139,8 @@ BOULET_LIVES.MODEL.PRODUCTS.player = function(){
       height: 476
   };
 
+  // ENCAPSULATING
   // private methods
-  // creating getWidth and getHeight
   // to prevent access by reference to dimensions
 
 
@@ -132,6 +161,7 @@ BOULET_LIVES.MODEL.PRODUCTS.player = function(){
 		  if (state == STOP )
 			{
 				console.log("STOP TO RUN");
+        control_image.src = "http://bouletcorp.com/wp-content/themes/bouletcorp_versionned/roulette/wait.jpg";
 				timer_handle = setInterval(nextPage,60);
 				state = RUN;
 				return;
@@ -139,6 +169,7 @@ BOULET_LIVES.MODEL.PRODUCTS.player = function(){
 		  if (state == RUN)
 			{
 				console.log("RUN TO PAUSE");
+        control_image.src = "http://bouletcorp.com/wp-content/themes/bouletcorp_versionned/roulette/go.jpg";
 				clearInterval(timer_handle);
 				state = PAUSE;
 				return;	
@@ -153,16 +184,27 @@ BOULET_LIVES.MODEL.PRODUCTS.player = function(){
     
     currentCase = 0;
     maxCase = imageList.length;
+    var waitSize = imageList.length;
     imageList.forEach(function(el,i){
       var caseImage = new Image();
 
-      caseImage.src="./img/"+el;
+      caseImage.src="http://bouletcorp.com/wp-content/themes/bouletcorp_versionned/roulette/"+el;
+      console.log(caseImage.src);
       casesArray.push(caseImage);
 
       caseImage.onload = function(){
+        waitSize--;
+        console.log("waitSize : "+waitSize);
+        if (waitSize == 0 ) 
+        {
+          control_image.src = "http://bouletcorp.com/wp-content/themes/bouletcorp_versionned/roulette/go.jpg";
+          console.log("All Images loaded");
+          casesArray[0].style.display="initial";
+          caseImage.style.display = "none";
+        }
         lives_cont.appendChild(caseImage);
         caseImage.style.width="100%";
-        if(i!=0) caseImage.style.display = "none";
+        caseImage.style.display = "none";
         var width=caseImage.width;
       };
     })
@@ -172,13 +214,13 @@ var resetPage = function()
 {
 	printTrace('Go start');
     casesArray[currentCase].style.display="none";
+    control_image.src = "http://bouletcorp.com/wp-content/themes/bouletcorp_versionned/roulette/go.jpg";
      currentCase=0;
     casesArray[currentCase].style.display="initial";
 }
 
 var nextPage = function()
 {
-  printTrace('Next page');
   casesArray[currentCase].style.display="none";
   currentCase = Math.floor(Math.random()*casesArray.length);
   if (currentCase == 0) currentCase = 1;
@@ -194,14 +236,10 @@ var nextPage = function()
     printTrace('Getting Comics');
 
     //First build the URL from data fecthing from host page
-    var comicURL="./js/img.json";
-
-    fetchJSON(comicURL,function(data){
-      imageList = data.images;
+	control_image =  document.querySelector('#control-img');
+  control_image.src = "http://bouletcorp.com/wp-content/themes/bouletcorp_versionned/roulette/VeuillezPatienter.gif";
       console.log(imageList);
       displayComics();
-
-    });
 
   }
 
@@ -223,13 +261,14 @@ var nextPage = function()
     }
     else
     {
-      printTrace("[ERROR] Havent found comics tag");
+      printTrace("[ERROR] Havent found container tag");
     }
 	control_button =  document.querySelector('#control');
   }
 
 //*****************************************
   //HELPERS 
+  //If you wanna get a distant json with info
   var fetchJSON = function(url, callback){
     printTrace("Fetching JSON for "+url);
 
@@ -261,18 +300,11 @@ var nextPage = function()
     };
 
     request.send();
-
-
   }
 
-  var printComics = function(){
-    printTrace(" * Serie is : "+comicsInfo.serie);
-    printTrace(" * Episode is : "+comicsInfo.episode);
-    printTrace(" * Author is : "+comicsInfo.author);
-  };
 
   var printTrace = function(message){
-    if(DEBUG_TRACE) console.log('### Spunch.js message : '+message);
+    if(DEBUG_TRACE) console.log('### Bouletcorp roulette  message : '+message);
   };
 
 //*****************************************************************************************
