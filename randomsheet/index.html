@@ -15,6 +15,7 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-material-design.min.css" rel="stylesheet">
     <link href="css/ripples.min.css" rel="stylesheet">
+    <link href="css/nouislider.min.css" rel="stylesheet">
 
    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
     <!-- Custom CSS -->
@@ -67,8 +68,11 @@
 
             <div class="col-md-3">
                 <p class="lead">Générateur de persos</p>
-		<a href="#" ng-click="changeVar()"  class="btn btn-raised btn-success">Do something</a>
-		<p> Voila un chapitre dont la valeur est {{dummyVar}} et qui explique le principe de cette page qui permet de générer des fiches de personnages.</p>
+		<a href="#" ng-click="regen()"  class="btn btn-raised btn-success">Re-générer une équipe</a>
+		<p> 
+		    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sagittis sit amet justo eget auctor. Praesent pulvinar justo at sem sodales cursus. Curabitur velit elit, placerat id turpis eu, rutrum congue sem. Ut elementum arcu et dolor aliquet porta. Donec eget lobortis est. Aenean congue diam ac elit blandit, sed maximus tellus porttitor. Nunc tempus ultrices tellus, sed hendrerit ex ultricies quis.
+		</p>
+		<div id="slider" class="slider shor"></div>
             </div>
 
             <div class="col-md-9">
@@ -78,13 +82,16 @@
 			</div>
 		</div>
 		<div class="row">
-			<div ng-repeat="perso in persos" class="col-md-4">
+			<div ng-repeat="perso in persos"  class="col-md-4">
 			<div class="panel panel-warning">
 				<div class="panel-heading">
-					<h3 class="panel-title">{{perso.name}}</h3>
+					<h3 class="panel-title">Personnage</h3>
 				</div>
 				<div class="panel-body">
-					{{perso.name}} est de sexe {{perso.sexe}}
+					<strong>Poids : </strong>{{perso.weight}}
+					<hr>
+					<strong>Taille : </strong>{{perso.size}}
+					<hr>
 				</div>
 			</div>
 			</div>
@@ -119,9 +126,22 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/material.min.js"></script>
     <script src="js/ripples.min.js"></script>
+    <script src="js/nouislider.min.js"></script>
+    <script src="js/random.js"></script>
     <script src="js/rsheet.js"></script>
     <script>
 	$.material.init();
+	var slider = document.getElementById('slider');
+
+	noUiSlider.create(slider, {
+	start: 5,
+	range: {
+	  'min': 1,
+	  'max': 50
+	}
+	});
+
+	slider.noUiSlider.on('update', regen());
     </script>
 
 </body>
