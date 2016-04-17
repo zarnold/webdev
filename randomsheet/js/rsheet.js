@@ -10,7 +10,7 @@ angular.module('rsheetApp', [])
 // rsheet classe
     //local random generator
     var r=new Random(190779);
-    $scope.nbPersos=6;
+    $scope.nbPersos=2;
 
     $scope.genPerso = function()
     {

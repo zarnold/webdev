@@ -15,7 +15,6 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-material-design.min.css" rel="stylesheet">
     <link href="css/ripples.min.css" rel="stylesheet">
-    <link href="css/nouislider.min.css" rel="stylesheet">
 
    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
     <!-- Custom CSS -->
@@ -72,7 +71,19 @@
 		<p> 
 		    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sagittis sit amet justo eget auctor. Praesent pulvinar justo at sem sodales cursus. Curabitur velit elit, placerat id turpis eu, rutrum congue sem. Ut elementum arcu et dolor aliquet porta. Donec eget lobortis est. Aenean congue diam ac elit blandit, sed maximus tellus porttitor. Nunc tempus ultrices tellus, sed hendrerit ex ultricies quis.
 		</p>
-		<div id="slider" class="slider shor"></div>
+		<div class="input-group">
+		  <span class="input-group-btn">
+		    <button type="button" class="btn btn-fab btn-fab-mini">
+		      <i class="material-icons">-</i>
+		  </button>
+		  </span>
+		  <input type="text" ng-model="nbPersos"  class="form-control">
+		  <span class="input-group-btn">
+		    <button type="button" class="btn btn-fab btn-fab-mini">
+		      <i class="material-icons">+</i>
+		  </button>
+		  </span>
+		</div>
             </div>
 
             <div class="col-md-9">
@@ -126,22 +137,10 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/material.min.js"></script>
     <script src="js/ripples.min.js"></script>
-    <script src="js/nouislider.min.js"></script>
     <script src="js/random.js"></script>
     <script src="js/rsheet.js"></script>
     <script>
 	$.material.init();
-	var slider = document.getElementById('slider');
-
-	noUiSlider.create(slider, {
-	start: 5,
-	range: {
-	  'min': 1,
-	  'max': 50
-	}
-	});
-
-	slider.noUiSlider.on('update', regen());
     </script>
 
 </body>
