@@ -88,12 +88,14 @@
 		<div class="row">
 
 			<div ng-repeat="perso in persos"  class="col-md-4">
-			<div  ng-class="{'panel-warning': perso.sex=='M','panel-success': perso.sex == 'F','panel-info' : perso.sex=='U'  }" class="panel" >
+			<div  ng-class="{'panel-warning': perso.gender=='M','panel-success': perso.gender == 'F' }" class="panel" >
 				<div class="panel-heading">
-					<h3 class="panel-title">{{perso.name}} : {{$index}} </h3>
+					<h3 class="panel-title">{{perso.name}}</h3>
 				</div>
 				<div class="panel-body">
-					<strong>Sexe : </strong>{{perso.sex}}
+					<p><strong>Sexe : </strong>{{perso.birthsex}}</p>
+					<p><strong>Genre : </strong>{{perso.gender}}</p>
+					<p><strong>Aime : </strong>les {{perso.love}}</p>
 					<hr>
 					<strong>Poids : </strong>{{perso.weight}}
 					<hr>

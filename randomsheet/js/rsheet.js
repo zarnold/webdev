@@ -16,10 +16,16 @@ angular.module('rsheetApp', [])
       var weight = Math.floor(r.normal(70,20));
       var size = Math.floor(r.normal(170,50));
       var name = "Omnomnom";
-      var sex = Math.random() > 0.5 ? 'F' :'M';
+      // Stats d'apres l'etude la plus poussé que j'ai trouvé
+      // http://williamsinstitute.law.ucla.edu/research/census-lgbt-demographics-studies/how-many-people-are-lesbian-gay-bisexual-and-transgender/
+      var birthsex = Math.random() > 0.5 ? 'F' :'M';
+      var gender = Math.random() > .995 ? ( birthsex=='M' ? 'F' :'M' ) : birthsex;
+      var love = Math.random() > .93 ? gender :( gender=='M' ? 'F' :'M' );
 
       var p = { 
-	'sex' : sex,
+	'birthsex' : birthsex,
+	'gender' : gender,
+	'love' : love,
 	'name' : name,
 	'weight':weight,
 	'size' : size
