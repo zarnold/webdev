@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="rsheetApp">
+<html lang="fr" ng-app="rsheetApp">
 
 <head>
 
@@ -32,33 +32,26 @@
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+<div class="bs-component">
+          <div class="navbar navbar-warning">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-warning-collapse">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="#">Random Sheet</a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              </div>
+              <div class="navbar-collapse collapse navbar-warning-collapse">
                 <ul class="nav navbar-nav">
-                    <li>
-                        <a href="http://cepcam.org">Le Cepcam</a>
-                    </li>
-                    <li>
-                        <a href="http://twitter.com/cepcam">Sur twitter</a>
-                    </li>
+                  <li class="active"><a href="http://twitter.com/cepcam">@</a></li>
+                  <li><a href="http://cepcam.org">Autres trucs</a></li>
                 </ul>
+                </ul>
+              </div>
             </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
+          </div>
 
     <!-- Page Content -->
     <div class="container" ng-controller="rsheetController">
@@ -69,17 +62,17 @@
                 <p class="lead">Générateur de persos</p>
 		<a href="#" ng-click="regen()"  class="btn btn-raised btn-success">Re-générer une équipe</a>
 		<p> 
-		    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sagittis sit amet justo eget auctor. Praesent pulvinar justo at sem sodales cursus. Curabitur velit elit, placerat id turpis eu, rutrum congue sem. Ut elementum arcu et dolor aliquet porta. Donec eget lobortis est. Aenean congue diam ac elit blandit, sed maximus tellus porttitor. Nunc tempus ultrices tellus, sed hendrerit ex ultricies quis.
+		Cette application permet de générer des caractéristiques de personnage 
 		</p>
 		<div class="input-group">
 		  <span class="input-group-btn">
-		    <button type="button" class="btn btn-fab btn-fab-mini">
+		    <button type="button" ng-click="decPerso()" class="btn btn-fab btn-fab-mini">
 		      <i class="material-icons">-</i>
 		  </button>
 		  </span>
-		  <input type="text" ng-model="nbPersos"  class="form-control">
+		  <input type="text" ng-model="nbPersos" ng-change="regen()"  class="form-control">
 		  <span class="input-group-btn">
-		    <button type="button" class="btn btn-fab btn-fab-mini">
+		    <button type="button" ng-click="incPerso()"  class="btn btn-fab btn-fab-mini">
 		      <i class="material-icons">+</i>
 		  </button>
 		  </span>
@@ -93,12 +86,15 @@
 			</div>
 		</div>
 		<div class="row">
+
 			<div ng-repeat="perso in persos"  class="col-md-4">
-			<div class="panel panel-warning">
+			<div  ng-class="{'panel-warning': perso.sex=='M','panel-success': perso.sex == 'F','panel-info' : perso.sex=='U'  }" class="panel" >
 				<div class="panel-heading">
-					<h3 class="panel-title">Personnage</h3>
+					<h3 class="panel-title">{{perso.name}} : {{$index}} </h3>
 				</div>
 				<div class="panel-body">
+					<strong>Sexe : </strong>{{perso.sex}}
+					<hr>
 					<strong>Poids : </strong>{{perso.weight}}
 					<hr>
 					<strong>Taille : </strong>{{perso.size}}
