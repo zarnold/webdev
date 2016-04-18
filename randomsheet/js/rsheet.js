@@ -13,17 +13,15 @@ angular.module('rsheetApp', [])
     $scope.nbPersos=9;
     function genPerso()
     {
-    
-      var weight = Math.floor(r.normal(70,20));
-      var size = Math.floor(r.normal(170,50));
       var name = "Omnomnom";
 
+      //Sexe
       // Juste parce que c'est classe d'ecrire p(E) pour voir une proba
       var p=function(E)
       {
 	var stats = {
 	  'F' : .47,
-	  'H' : .47,
+	  'M' : .47,
 	  'cisgenre' : 0.8,
 	  'agenre' : 0.05,
 	  'hetero': 0.85,
@@ -39,7 +37,7 @@ angular.module('rsheetApp', [])
 
       var birthsex = 
 	m < p('F') ? 'F' :
-	m < p('F')+p('H')  ? 'M' : 'U'
+	m < p('F')+p('M')  ? 'M' : 'U'
       ;
 
       m = Math.random();
@@ -57,11 +55,28 @@ angular.module('rsheetApp', [])
 	m < p('hetero')+p('homo') ? (gender):'deux'
       ;	
 
+      //Corpulence    
+      var bodyStats = {
+	size : {
+	      'M' : {'mean':175, 'var':20},  
+	      'F' : {'mean':163, 'var':20}
+	  },
+	imc: {'mean':25,'var' : 5 } 
+      };
+
+      var bodySex = birthsex == 'U' ? (Math.random() > .5 ? 'M':'F') : birthsex;
+      var size = Math.floor(r.normal(bodyStats['size'][bodySex]['mean'], bodyStats['size'][bodySex]['var'])); 
+      var imc = r.normal(bodyStats['imc']['mean'],bodyStats['imc']['var']);
+      var weight = Math.floor(imc * Math.pow((size / 100 ) ,2 ));
+      
+
+      //résumé
       var sheet = { 
 	'birthsex' : birthsex,
 	'gender' : gender,
 	'love' : love,
 	'name' : name,
+	'imc' : imc,
 	'weight':weight,
 	'size' : size
       }; 
