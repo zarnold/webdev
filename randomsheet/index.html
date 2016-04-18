@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Shop Item - Start Bootstrap Template</title>
+    <title>Random Sheet : generate real peoples </title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -88,14 +88,14 @@
 		<div class="row">
 
 			<div ng-repeat="perso in persos"  class="col-md-4">
-			<div  ng-class="{'panel-warning': perso.gender=='M','panel-success': perso.gender == 'F' }" class="panel" >
+			<div  ng-class="{'panel-warning': perso.birthsex=='M','panel-success': perso.birthsex== 'F' ,'panel-info': perso.birthsex == 'U'}" class="panel" >
 				<div class="panel-heading">
 					<h3 class="panel-title">{{perso.name}}</h3>
 				</div>
 				<div class="panel-body">
 					<p><strong>Sexe : </strong>{{perso.birthsex}}</p>
-					<p><strong>Genre : </strong>{{perso.gender}}</p>
-					<p><strong>Aime : </strong>les {{perso.love}}</p>
+					<p ng-class="{'text-primary':perso.gender != perso.birthsex}"><strong>Genre : </strong>{{perso.gender}}</p>
+					<p ng-class="{'text-info':perso.love == perso.gender, 'text-warning': perso.love == 'deux'}"><strong>Aime : </strong>les {{perso.love}}</p>
 					<hr>
 					<strong>Poids : </strong>{{perso.weight}}
 					<hr>

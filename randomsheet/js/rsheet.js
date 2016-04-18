@@ -9,20 +9,55 @@ angular.module('rsheetApp', [])
 
 // rsheet classe
     //local random generator
-    var r=new Random(190779);
-    $scope.nbPersos=5;
+    var r=new Random(231087);
+    $scope.nbPersos=9;
     function genPerso()
     {
+    
       var weight = Math.floor(r.normal(70,20));
       var size = Math.floor(r.normal(170,50));
       var name = "Omnomnom";
+
+      // Juste parce que c'est classe d'ecrire p(E) pour voir une proba
+      var p=function(E)
+      {
+	var stats = {
+	  'F' : .47,
+	  'H' : .47,
+	  'cisgenre' : 0.8,
+	  'agenre' : 0.05,
+	  'hetero': 0.85,
+	  'homo' : 0.1,
+	  'bi' : 0.5
+	};
+	return stats[E];
+      }
+
       // Stats d'apres l'etude la plus poussé que j'ai trouvé
       // http://williamsinstitute.law.ucla.edu/research/census-lgbt-demographics-studies/how-many-people-are-lesbian-gay-bisexual-and-transgender/
-      var birthsex = Math.random() > 0.5 ? 'F' :'M';
-      var gender = Math.random() > .995 ? ( birthsex=='M' ? 'F' :'M' ) : birthsex;
-      var love = Math.random() > .93 ? gender :( gender=='M' ? 'F' :'M' );
+      var m=Math.random();
 
-      var p = { 
+      var birthsex = 
+	m < p('F') ? 'F' :
+	m < p('F')+p('H')  ? 'M' : 'U'
+      ;
+
+      m = Math.random();
+
+      var gender = 
+      m < p('cisgenre') ?  ( birthsex == 'U' ? (Math.random()<.5 ? 'M':'F' ) : birthsex) : 
+      ( m < p('cisgenre') + p('agenre') ? 'agenre' : 
+      birthsex == 'M' ? 'F':'M' ) 
+      ;
+
+      m = Math.random();
+      var love = 
+	gender =='agenre' ? ( Math.random() <.5 ? 'M' : 'F' ) :
+	m < p('hetero') ? (gender == 'M' ? 'F':'M') :
+	m < p('hetero')+p('homo') ? (gender):'deux'
+      ;	
+
+      var sheet = { 
 	'birthsex' : birthsex,
 	'gender' : gender,
 	'love' : love,
@@ -31,7 +66,7 @@ angular.module('rsheetApp', [])
 	'size' : size
       }; 
 
-      return p;
+      return sheet;
     };
 
     function genRoaster()
