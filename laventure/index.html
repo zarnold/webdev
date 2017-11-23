@@ -1,0 +1,50 @@
+<html>
+	<head>
+	</head>
+	<body>
+		<h2> l'aventure </h2>
+		<canvas id="gamescreen" width=420 height=380></canvas>
+	</body>
+</html>
+
+<script>
+
+/**
+ * Point
+ * @constructor
+ */
+ function Point(x,y) {
+	 this.x = x;
+	 this.y = y;
+ }
+
+/**
+ * GameScreen object
+ * @constructor
+ */
+ function GameScreen(idCanvas) {
+	 this.canvas = document.getElementById('gamescreen');
+	 this.context = this.canvas.getContext('2d');
+ }
+
+ /**
+  * Map
+	* @constructor
+	*/
+	function Map(center) {
+		this.centeredOn = center;
+		this.width = 480;
+		this.height = 380;
+		this.bitmap = [];
+
+		for (var i=0; i<this.width; i++)
+					for(var j=0; j<this.height; j++)
+						for (var k=0; k<3; k++)
+								this.bitmap[j*this.width + i*3 + k] = 255*Math.floor(Math.random());
+	};
+
+	var a = new Map();
+	var b = new GameScreen();
+
+	b.context.putImageData(a.bitmap, 0, 0)
+</script>
